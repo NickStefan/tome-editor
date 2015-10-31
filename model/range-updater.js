@@ -195,17 +195,16 @@ var page6 = {
 
 
 // TODO
-// updateRange(style, start, length, addOrRemove) method
-// mergeDuplicateStyles(styles) method
+// updateRanges(ranges, start, length, addOrRemove)
 
 // INLINE COMMANDS
-// applyStyle(cssProp, value)
-// insertText(index)
+// insertText(index, charsToInsert)
 // removeText(start, end)
-// computeStyles(start, end)
+// computedRanges(start, end)
 
 // BLOCK COMMANDS
 // splitBlock(index)
+// mergeBlock(index1, index2)
 // changeBlockType(type)
 
 
@@ -221,26 +220,5 @@ function updateRange(styleObj, start, length, addOrRemove){
         styleObj.end = styleObj.end - length;
     }
     return styleObj;
-}
-
-// adding text vs just transforming???
-function findIntersections(styles, start, length, foundCallBack, nothingCallback){
-    // find where
-        // style.start < start
-}
-
-function mergeDuplicateStyles(styles){
-
-}
-
-function applyStyles(styles, cssProp, value, start, end){
-    // logic?? returning what???
-    styles = findIntersections(styles, start, end - start, function(found){
-        return updateRange(styleObj, start, end - start, '???');
-    }, function (){
-        return makeRange(cssProp, value, start, end);
-    });
-    styles = mergeDuplicateStyles(styles);
-    return styles;
 }
 

@@ -1,4 +1,12 @@
-import {Priority} from './priority';
+import {Priority} from '../utils/priority';
+
+function flattenRanges(obj){
+    var arr = [];
+    for (var key in obj){
+        arr.push(obj[key]);
+    }
+    return Array.prototype.concat.apply([], arr);
+}
 
 // serializes block model to to string representation of HTML
 function serializeBlock (block){
@@ -18,7 +26,7 @@ function serializeBlock (block){
                 priority: 'max'
             }
         ],
-        initialNodes: block.styles
+        initialNodes: flattenRanges(block.ranges)
     });
 
     // lowest end index value has highest priority
@@ -55,15 +63,15 @@ function serializeBlock (block){
 
 function openTags(text, i, toBeOpened, toBeClosed){
     if (toBeOpened.peek() && i === toBeOpened.peek().start){
-        var style = toBeOpened.pop();
-        if (toBeClosed.peek() && style.end > toBeClosed.peek().end){
+        var range = toBeOpened.pop();
+        if (toBeClosed.peek() && range.end > toBeClosed.peek().end){
             text = closeSpan(text, toBeClosed.peek());
-            text = openSpan(text, style);
+            text = openSpan(text, range);
             text = openSpan(text, toBeClosed.peek());
         } else {
-            text = openSpan(text, style);
+            text = openSpan(text, range);
         }
-        toBeClosed.add(style);
+        toBeClosed.add(range);
         text = openTags(text, i, toBeOpened, toBeClosed);
     }
     return text;
