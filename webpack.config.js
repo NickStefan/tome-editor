@@ -31,7 +31,7 @@ module.exports = [
         entry: __dirname + '/serialize/serialize-block.js',
         target: 'web',
         output: {
-            path: './dist/',
+            path: './build/',
             filename: 'tome.js'
         },
         resolve:{
@@ -39,7 +39,7 @@ module.exports = [
         },
         module: {
             loaders: commonLoaders.concat([
-                { test: /\.css$/,  loader: path.join(__dirname, 'server', 'style-collector') + '!css-loader' },
+                { test: /\.css$/,  loader: path.join(__dirname, 'server', 'style-collector') + '!css-loader' }
             ])
         }
     }

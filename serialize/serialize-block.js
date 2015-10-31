@@ -1,6 +1,6 @@
 import {Priority} from './priority';
 
-// q: how do we serialize this to xml/html
+// serializes block model to to string representation of HTML
 function serializeBlock (block){
 
     var text = '<' + block.blockType.toLowerCase() + '>';
@@ -36,7 +36,7 @@ function serializeBlock (block){
         char = block.rawText[i];
 
         if (toBeOpened.peek() && i === toBeOpened.peek().start ){
-           text = openTags(text, i, toBeOpened, toBeClosed);
+            text = openTags(text, i, toBeOpened, toBeClosed);
         }
 
         text += char;
@@ -91,7 +91,3 @@ function toCSSName(str){
 
 export default serializeBlock;
 export { serializeBlock };
-
-// console.time('serialize');
-// console.log(serializeBlock(page6.blocks[0]));
-// console.timeEnd('serialize');

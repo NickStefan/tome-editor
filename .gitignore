@@ -1,2 +1,3 @@
 node_modules/
-tome.js
+build/
+temp-wocha/

@@ -56,7 +56,7 @@ Priority.prototype.compare = function(a, b, prop, minOrMax){
             return 0;
         }
     }
-}
+};
 
 export default Priority;
 export {Priority};
