@@ -1,0 +1,45 @@
+{
+    "parser": "babel-eslint",
+    "env": {
+        "es6": true,
+        "node": true,
+        "browser": true
+    },
+    "ecmaFeatures": {
+        "jsx": true
+    },
+    "globals": {
+        "define": true,
+        "require": true,
+        "describe": true,
+        "beforeEach": true,
+        "afterEach": true,
+        "before": true,
+        "after": true,
+        "it": true,
+        "sinon": true,
+        "should": true,
+        "mocha": true
+    },
+    "rules": {
+        "no-alert": [0],
+        "strict": [0],
+        "eol-last":[0],
+        "no-underscore-dangle":[0],
+        "no-shadow": [0],
+        "camelcase": [0],
+        "indent": [2, 4, {"SwitchCase": 1}],
+        "quotes": [2, "single", "avoid-escape"],
+        "quote-props": [2, "consistent-as-needed"],
+        "linebreak-style": [2, "unix"],
+        "semi": [2, "always"],
+        "func-style": 0,
+        "max-params": [2, 4],
+        "no-use-before-define": [2, "nofunc"],
+        "comma-dangle": [2, "never"],
+        "no-underscore-dangle": 0,
+        "no-multi-spaces": [2, { "exceptions": { "Property": true, "VariableDeclarator": true, "ImportDeclaration": true}}],
+        "no-unused-vars": [2, {"vars": "all", "args": "none"}],
+        "no-undef": 2
+    }
+}
