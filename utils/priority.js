@@ -60,7 +60,7 @@ Priority.prototype.compare = function(a, b, prop, minOrMax){
 
 Priority.prototype.toArray = function(){
     return this.arr;
-}
+};
 
 export default Priority;
 export {Priority};

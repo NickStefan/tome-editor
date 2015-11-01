@@ -1,79 +1,80 @@
 
 function updateRanges(ranges, index, length){
 
-    // iterate all ranges,
-    // if intersection, add/substract to start/end of the range
-
-    var updateRanges = [];
+    var updated = [];
     var current;
 
     for (var i = 0; i < ranges.length; i++){
         current = ranges[i];
 
-        // overlapping
-        // current wholey contains new
-        // c --------------
-        //      n -----
-        if (current.start <= newRange.start && current.end >= newRange.end){
-            // need to split current into two ranges
-            // c --- n ---- c ----
-            // current1 current start with new's start as end
-            // current2 new end current end
-            deconflictedRanges.push({
-                name: current.name,
-                value: current.value,
-                start:  current.start,
-                end: newRange.start
+        // if adding text
+        if (length >= 0){
 
-            });
+            // if index is left of start, change start and end by length
+            // i
+            //     c --------------
+            if (index < current.start){
+                current.start += length;
+                current.end += length;
+            }
 
-            deconflictedRanges.push({
-                name: current.name,
-                value: current.value,
-                start: newRange.end,
-                end: current.end
-            });
-        }
+            // if index is right of start, but left of end, change end by length
+            //       i
+            // c ----------
+            else if (index >= current.start && index <= current.end){
+                current.end += length;
+            }
 
-        // overlapping
-        // current contained wholey inside new
-        // n --------------
-        //      c ----
-        else if (newRange.start <= current.start && newRange.end >= current.end){
-            continue;
-        }
+            // if index is right of end, do nothing
+            //           i
+            //  c ----
+            else {
+                // do nothing
+            }
 
-        // overlapping
-        // current left of new
-        // c ----------
-        //         n -------
-        else if (current.start < newRange.start && current.end >= newRange.start){
-
-            // need to subtract from current's end property
-            // c --- n ------
-            current.end = newRange.start;
-            deconflictedRanges.push(current);
-        }
-
-        // overlapping
-        // current right of new
-        // n --------
-        //       c -------
-        else if (newRange.start < current.start && newRange.end >= current.start){
-
-            // need to add to current's start property
-            // n ------- c---
-            current.start = newRange.end;
-            deconflictedRanges.push(current);
-
+        // removing text
         } else {
-            deconflictedRanges.push(current);
+            // if index is left of start, change start and end by length
+            // i
+            //     c --------------
+            if (index < current.start){
+                current.start += length;
+                current.end += length;
+            }
+
+            // if index is right of start, but left of end, change end by length
+            //       i
+            // c ----------
+            else if (index >= current.start && index <= current.end){
+                current.end += length;
+                // but what if the index change goes leftward past start of c?
+                if (current.start > (index + length)){
+                    // delete range, dont push to update
+                    continue;
+                }
+            }
+
+            // if index is right of end, do nothing
+            //           i
+            //  c ----
+            else {
+                // but what if the index change goes leftward past end of c?
+                // if goes past c end, change end by length
+                if (current.end > (index + length)){
+                    current.end = index + length;
+                }
+
+                // but what if the index change goes leftward past start of c?
+                if (current.start > (index + length)){
+                    // delete range, dont push to update
+                    continue;
+                }
+            }
         }
+        updated.push(current);
     }
 
-    updatedRanges.push(newRange);
-
-    return updatedRanges;
+    return updated;
 }
 
 export default updateRanges;

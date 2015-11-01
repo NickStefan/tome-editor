@@ -8,10 +8,10 @@ describe('Update Ranges', function(){
         ];
 
         var expectedFontWeightRanges = [
-            { name: 'fontWeight', value: '700', start: 11, end: 20}
+            { name: 'fontWeight', value: '700', start: 11, end: 19}
         ];
 
-       var newFontWeightRanges = updateRanges(fontWeightRanges, 14, 6);
+       var newFontWeightRanges = updateRanges(fontWeightRanges, 12, 6);
 
         expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);
     });
@@ -27,6 +27,19 @@ describe('Update Ranges', function(){
         ];
 
        var newFontWeightRanges = updateRanges(fontWeightRanges, 13, -1);
+
+        expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);
+    });
+
+    it('should remove ranges when text deletion creates a \'negative range\'', function(){
+
+        var fontWeightRanges = [
+            { name: 'fontWeight', value: '700', start: 11, end: 13}
+        ];
+
+        var expectedFontWeightRanges = [];
+
+       var newFontWeightRanges = updateRanges(fontWeightRanges, 13, -10);
 
         expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);
     });
