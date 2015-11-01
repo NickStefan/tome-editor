@@ -19,65 +19,69 @@ describe('Apply Range', function() {
         expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);
     });
 
-    it('should merge new ranges: new overlaps right of old', function(){
+    it('should shrink conflicting old range, that overlapps new range, on left', function(){
         var fontWeightRanges = [
             { name: 'fontWeight', value: '700', start: 11, end: 18}
         ];
 
         var newFontWeightRanges = applyRange(fontWeightRanges, {
-            name: 'fontWeight', value: '700', start: 14, end: 35
+            name: 'fontWeight', value: '500', start: 14, end: 35
         });
 
         var expectedFontWeightRanges = [
-            { name: 'fontWeight', value: '700', start: 11, end: 35}
+            { name: 'fontWeight', value: '700', start: 11, end: 14},
+            { name: 'fontWeight', value: '500', start: 14, end: 35}
         ];
 
         expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);
     });
 
-    it('should merge new ranges: new overlaps left of old', function(){
+    it('should shrink conflicting old range, that overlapps new range, on right', function(){
         var fontWeightRanges = [
             { name: 'fontWeight', value: '700', start: 11, end: 18}
         ];
 
         var newFontWeightRanges = applyRange(fontWeightRanges, {
-            name: 'fontWeight', value: '700', start: 5, end: 14
+            name: 'fontWeight', value: '500', start: 5, end: 14
         });
 
         var expectedFontWeightRanges = [
-            { name: 'fontWeight', value: '700', start: 5, end: 18}
+            { name: 'fontWeight', value: '700', start: 14, end: 18},
+            { name: 'fontWeight', value: '500', start: 5, end: 14}
         ];
 
         expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);
     });
 
-    it('should merge new ranges: new is wholey contained in old', function(){
+    it('should split old ranges when new is wholey contained in old', function(){
         var fontWeightRanges = [
             { name: 'fontWeight', value: '700', start: 11, end: 18}
         ];
 
         var newFontWeightRanges = applyRange(fontWeightRanges, {
-            name: 'fontWeight', value: '700', start: 14, end: 17
+            name: 'fontWeight', value: '300', start: 14, end: 17
         });
 
         var expectedFontWeightRanges = [
-            { name: 'fontWeight', value: '700', start: 11, end: 18}
+            { name: 'fontWeight', value: '700', start: 11, end: 14},
+            { name: 'fontWeight', value: '700', start: 17, end: 18},
+            { name: 'fontWeight', value: '300', start: 14, end: 17}
         ];
 
         expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);
     });
 
-    it('should merge new ranges: new wholey contains old', function(){
+    it('should remove old ranges: new wholey contains old', function(){
         var fontWeightRanges = [
             { name: 'fontWeight', value: '700', start: 11, end: 18}
         ];
 
         var newFontWeightRanges = applyRange(fontWeightRanges, {
-            name: 'fontWeight', value: '700', start: 9, end: 35
+            name: 'fontWeight', value: '300', start: 9, end: 35
         });
 
         var expectedFontWeightRanges = [
-            { name: 'fontWeight', value: '700', start: 9, end: 35}
+            { name: 'fontWeight', value: '300', start: 9, end: 35}
         ];
 
         expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);

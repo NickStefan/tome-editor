@@ -1,23 +1,14 @@
 
-function applyRange(ranges, newRange){
+function updateRanges(ranges, index, length){
 
-    // need to iterate the entire ranges array
-    // shrink ALL conflicting ranges (same type, different value)
-    // then insert the newRange at the very end
+    // iterate all ranges,
+    // if intersection, add/substract to start/end of the range
 
-    var deconflictedRanges = [];
+    var updateRanges = [];
     var current;
 
     for (var i = 0; i < ranges.length; i++){
         current = ranges[i];
-
-        // let cleanRanges deal with deduping same value ranges
-        if (current.value === newRange.value){
-            deconflictedRanges.push(current);
-            continue;
-        }
-
-        // different value, need to check
 
         // overlapping
         // current wholey contains new
@@ -80,10 +71,10 @@ function applyRange(ranges, newRange){
         }
     }
 
-    deconflictedRanges.push(newRange);
+    updatedRanges.push(newRange);
 
-    return deconflictedRanges;
+    return updatedRanges;
 }
 
-export default applyRange;
-export { applyRange };
+export default updateRanges;
+export {updateRanges};
