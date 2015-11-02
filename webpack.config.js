@@ -28,7 +28,7 @@ module.exports = [
     {
         name: 'web-build',
         eslint: eslint,
-        entry: __dirname + '/serialize/serialize-block.js',
+        entry: __dirname + '/main/main.js',
         target: 'web',
         output: {
             path: './build/',
@@ -42,6 +42,23 @@ module.exports = [
                 { test: /\.css$/,  loader: path.join(__dirname, 'server', 'style-collector') + '!css-loader' }
             ])
         }
+    },
+    {
+        name: 'web-build',
+        eslint: eslint,
+        entry: __dirname + '/main/main.js',
+        target: 'web',
+        output: {
+            path: './example/',
+            filename: 'tome.js'
+        },
+        resolve:{
+            alias: {}
+        },
+        module: {
+            loaders: commonLoaders.concat([
+                { test: /\.css$/,  loader: path.join(__dirname, 'server', 'style-collector') + '!css-loader' }
+            ])
+        }
     }
-
 ];

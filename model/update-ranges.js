@@ -46,6 +46,7 @@ function updateRanges(ranges, index, length){
             //       i
             // c ----------
             else if (index >= current.start && index <= current.end){
+                // debugger
                 current.end += length;
                 // but what if the index change goes leftward past start of c?
                 if (current.start > (index + length)){
