@@ -1,7 +1,7 @@
 import {serializeBlock} from '../serialize/serialize-block';
 
 import {insertText} from '../model/insert-text';
-// import {removeText} from '../model/remove-text';
+import {removeText} from '../model/remove-text';
 import {cleanRanges} from '../model/clean-ranges';
 
 import {getCursor} from '../cursor/get-cursor';
@@ -14,12 +14,15 @@ function Main(config){
 
     if (this.el){
 
-        this.el
-        .setAttribute('contentEditable', true);
-
         this.hiddenInput = document.createElement('input');
         this.hiddenInput.style.width = this.el.offsetWidth;
         document.body.appendChild(this.hiddenInput);
+
+        this.el
+        .setAttribute('contentEditable', true);
+
+        this.el
+        .innerHTML = this.serialize();
 
         this.el
         .addEventListener('change', function(e){
@@ -80,6 +83,10 @@ function Main(config){
             return true;
         });
 
+        // TODO:
+        // DON'T ADVANCE CURSOR ON 'OPTION'
+        // SEE RANGE CODE IN INPUT HANDLER BELOW
+
         this.hiddenInput
         .addEventListener('input', function(e){
             var input = this;
@@ -90,63 +97,41 @@ function Main(config){
 
             // collapsed
             if (input.selectionStart === input.selectionEnd){
+
                 // deletion
                 if (input.selectionStart < start){
+                    var length = start - input.selectionStart;
 
+                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], start, length));
+
+                    self.cursor.start = input.selectionStart;
+                    self.cursor.end = self.cursor.start;
+
+                // insertion
                 } else if (input.selectionStart > start){
                     var chars = input.value.slice(start, input.selectionStart);
                     console.log('collapsed', chars);
+
+                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], start, chars));
+
+                    self.cursor.start += chars.length;
+                    self.cursor.end = self.cursor.start;
                 }
             // range
             } else {
                 var chars = input.value.slice(input.selectionStart, input.selectionEnd);
                 console.log('range', chars);
+
+                // ????
+                self.cursor.start = input.selectionStart;
+                self.cursor.end = input.selectionEnd;
             }
 
-            self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], start, chars));
 
             self.el.innerHTML = self.serialize();
 
-            self.cursor.start += chars.length;
-
-            self.restoreCursor(self.cursor);
-
-            return true;
+            self.restoreCursor();
         });
-
-        // this.el
-        // .addEventListener('keypress', function(e){
-        //     debugger;
-        //     e.preventDefault();
-        //     e.stopPropagation();
-
-        //     var cursor = self.getCursor();
-        //     if (!cursor) {
-        //         return;
-        //     }
-
-        //     var blockStart = cursor.blockStart;
-        //     var start = cursor.start;
-        //     // var end = cursor.end;
-
-
-        //     // do ops,
-        //     // reset focus, reset range
-
-        //     var charsToInsert = ' bob';
-        //     console.log('keypress');
-        //     console.dir(e);
-
-        //     self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], start, charsToInsert));
-
-        //     self.el.innerHTML = self.serialize();
-
-        //     cursor.start += charsToInsert.length;
-
-        //     self.restoreCursor(cursor);
-        // });
-
-        this.el.innerHTML = this.serialize();
     }
 }
 
@@ -179,11 +164,11 @@ Main.prototype.focusInput = function(){
 };
 
 Main.prototype.getCursor = function(){
-    return getCursor();
+    return getCursor.call(this);
 };
 
 Main.prototype.restoreCursor = function(cursor){
-    restoreCursor(cursor);
+    restoreCursor.call(this, cursor);
 };
 
 if (window){
