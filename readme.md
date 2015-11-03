@@ -54,6 +54,10 @@ Need a page folder
  - mergeBlock(page, blockNum1, blockNum2);
  - changeBlockType(page, blockNum, type)
 
+## Selection API
+### getCursor
+### restoreCursor
+
 ## Render and Present
 ### serialize
  - serialize block
