@@ -19,6 +19,10 @@ function cleanRanges(ranges){
     var current = ranges.pop();
     var next;
 
+    if (!ranges.peek()){
+        cleanedRanges.push(current);
+    }
+
     while (ranges.peek()){
         next = ranges.pop();
 

@@ -1,4 +1,4 @@
-function restoreCursor(){
+function restoreCursor(cursor){
 
 }
 

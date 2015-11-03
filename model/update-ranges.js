@@ -13,7 +13,7 @@ function updateRanges(ranges, index, length){
             // if index is left of start, change start and end by length
             // i
             //     c --------------
-            if (index < current.start){
+            if (index <= current.start){
                 current.start += length;
                 current.end += length;
             }
@@ -21,7 +21,11 @@ function updateRanges(ranges, index, length){
             // if index is right of start, but left of end, change end by length
             //       i
             // c ----------
-            else if (index >= current.start && index <= current.end){
+            //
+            // if
+            // c -----
+            //         i the i should extend c ... thats why +1 end
+            else if (index >= current.start && index <= current.end + 1){
                 current.end += length;
             }
 
@@ -46,7 +50,6 @@ function updateRanges(ranges, index, length){
             //       i
             // c ----------
             else if (index >= current.start && index <= current.end){
-                // debugger
                 current.end += length;
                 // but what if the index change goes leftward past start of c?
                 if (current.start > (index + length)){

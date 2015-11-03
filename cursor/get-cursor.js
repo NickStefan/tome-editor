@@ -40,7 +40,7 @@ function countFromLeft(block, target, targetOffset){
     var count = 0;
     for (var i=0; i<textNodes.length; i++){
         if (textNodes[i] === target){
-            count + targetOffset;
+            count += targetOffset;
             break;
         }
         count += textNodes[i].textContent.length;
@@ -55,7 +55,7 @@ function countFromLeft(block, target, targetOffset){
 //     var count = 0;
 //     for (var i= textNodes.length - 1; i >= 0; i--){
 //         if (textNodes[i] === target){
-//             count + targetOffset;
+//             count += targetOffset;
 //             break;
 //         }
 //         count += textNodes[i].textContent.length;
