@@ -10,7 +10,7 @@ var Tome = new Tome({
                 rawText: 'My name is bob.',
                 ranges: {
                     fontWeight: [
-                        { name: 'fontWeight', value: '700', start: 11, end: 13}
+                        { name: 'fontWeight', value: '700', start: 11, end: 14}
                     ]
                 }
             }

@@ -10,7 +10,7 @@ describe('Block Serializer', function() {
             rawText: 'My name is bob.',
             ranges: {
                 fontWeight: [
-                    { name: 'fontWeight', value: '700', start: 11, end: 13}
+                    { name: 'fontWeight', value: '700', start: 11, end: 14}
                 ]
             }
         };
@@ -27,8 +27,8 @@ describe('Block Serializer', function() {
             rawText: 'My name is bob. My name is Bob Smith',
             ranges: {
                 fontWeight: [
-                    { name: 'fontWeight', value: '700', start: 11, end: 13},
-                    { name: 'fontWeight', value: '700', start: 27, end: 35}
+                    { name: 'fontWeight', value: '700', start: 11, end: 14},
+                    { name: 'fontWeight', value: '700', start: 27, end: 36}
                 ]
             }
         };
@@ -46,11 +46,11 @@ describe('Block Serializer', function() {
             rawText: 'My name is bob. My name is Bob Smith',
             ranges: {
                 fontWeight: [
-                    { name: 'fontWeight', value: '700', start: 11, end: 13 },
-                    { name: 'fontWeight', value: '700', start: 27, end: 35 }
+                    { name: 'fontWeight', value: '700', start: 11, end: 14 },
+                    { name: 'fontWeight', value: '700', start: 27, end: 36 }
                 ],
                 color: [
-                    { name: 'color', value: 'green', start: 11, end: 29 }
+                    { name: 'color', value: 'green', start: 11, end: 30 }
                 ]
             }
         };
@@ -69,14 +69,14 @@ describe('Block Serializer', function() {
             rawText: 'My name is bob. My name is Bob Smith',
             ranges: {
                 fontWeight: [
-                    { name: 'fontWeight', value: '700', start: 11, end: 13 },
-                    { name: 'fontWeight', value: '700', start: 27, end: 35 },
+                    { name: 'fontWeight', value: '700', start: 11, end: 14 },
+                    { name: 'fontWeight', value: '700', start: 27, end: 36 },
                 ],
                 color: [
-                    { name: 'color', value: 'green', start: 11, end: 29 },
+                    { name: 'color', value: 'green', start: 11, end: 30 },
                 ],
                 fontStyle: [
-                    { name: 'fontStyle', value: 'italic', start: 8, end: 14 }
+                    { name: 'fontStyle', value: 'italic', start: 8, end: 15 }
                 ]
             }
         };

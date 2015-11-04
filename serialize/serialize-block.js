@@ -43,13 +43,13 @@ function serializeBlock (block){
     for (var i = 0; i < block.rawText.length; i++ ){
         char = block.rawText[i];
 
-        if (toBeOpened.peek() && i === toBeOpened.peek().start ){
+        if (toBeOpened.peek() && i === toBeOpened.peek().start && toBeOpened.peek().end !== toBeOpened.peek().start){
             text = openTags(text, i, toBeOpened, toBeClosed);
         }
 
         text += char;
 
-        if (toBeClosed.peek() && i === toBeClosed.peek().end ){
+        if (toBeClosed.peek() && i === toBeClosed.peek().end - 1){
             text = closeTags(text, i, toBeOpened, toBeClosed);
         }
     }
@@ -78,7 +78,7 @@ function openTags(text, i, toBeOpened, toBeClosed){
 }
 
 function closeTags(text, i, toBeOpened, toBeClosed){
-    if (toBeClosed.peek() && i === toBeClosed.peek().end){
+    if (toBeClosed.peek() && i === toBeClosed.peek().end - 1){
         text = closeSpan(text, toBeClosed.pop());
         text = closeTags(text, i, toBeOpened, toBeClosed);
     }

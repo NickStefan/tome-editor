@@ -3,17 +3,22 @@ function updateRanges(ranges, index, length){
 
     var updated = [];
     var current;
-    debugger;
+
     for (var i = 0; i < ranges.length; i++){
         current = ranges[i];
 
         // if adding text
         if (length >= 0){
 
+            // previously shrunk range, now to be expanded
+            if (index === current.start && index === current.end){
+                current.end += length;
+            }
+
             // if index is left of start, change start and end by length
             // i
             //     c --------------
-            if (index <= current.start){
+            else if (index <= current.start){
                 current.start += length;
                 current.end += length;
             }
@@ -21,11 +26,7 @@ function updateRanges(ranges, index, length){
             // if index is right of start, but left of end, change end by length
             //       i
             // c ----------
-            //
-            // if
-            // c -----
-            //         i the i should extend c ... thats why +1 end
-            else if (index >= current.start && index <= current.end + 1){
+            else if (index >= current.start && index <= current.end){
                 current.end += length;
             }
 
@@ -49,11 +50,7 @@ function updateRanges(ranges, index, length){
             // if index is right of start, but left of end, change end by length
             //       i
             // c ----------
-            //
-            // if
-            // c -----
-            //         i the i shrinks c ... thats why +1 end
-            else if (index >= current.start && index <= current.end + 1){
+            else if (index >= current.start && index <= current.end){
                 current.end += length;
                 // but what if the index change goes leftward past start of c?
                 if (current.start > (index + length)){
@@ -79,7 +76,7 @@ function updateRanges(ranges, index, length){
                 }
             }
         }
-        if (current === undefined) debugger;
+
         updated.push(current);
     }
 
