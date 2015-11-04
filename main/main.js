@@ -22,6 +22,9 @@ function Main(config){
         .setAttribute('contentEditable', true);
 
         this.el
+        .style.whiteSpace = 'pre';
+
+        this.el
         .innerHTML = this.serialize();
 
         this.el
@@ -30,6 +33,9 @@ function Main(config){
                 self.hiddenInput.style.width = self.el.offsetWidth;
             }
         });
+
+        // listeners should be in separate files
+        // then called with this context here
 
         this.el
         .addEventListener('keydown', function(e){
@@ -84,47 +90,58 @@ function Main(config){
         });
 
         // TODO:
-        // DON'T ADVANCE CURSOR ON 'OPTION'
+        // DON'T ADVANCE CURSOR ON 'OPTION' / composition
         // SEE RANGE CODE IN INPUT HANDLER BELOW
 
         this.hiddenInput
         .addEventListener('input', function(e){
             var input = this;
 
+            // need to cover more cases:
+            // el has range, hit delete
+            // input will be collapsed, but deleted a range
+            //
+            // el is collapsed, hit delete
+            // input will be collapsed, but deleted collapsed
+            //
+            // el is collapsed, hit paste
+            // input will be range, but el was collapsed?
+
             var blockStart = self.cursor.blockStart;
-            var start = self.cursor.start;
-            // var end = self.cursor.end;
 
             // collapsed
             if (input.selectionStart === input.selectionEnd){
 
                 // deletion
-                if (input.selectionStart < start){
-                    var length = start - input.selectionStart;
+                if (input.selectionEnd < self.cursor.end){
+                    var length = self.cursor.end - input.selectionEnd;
 
-                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], start, length));
+                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], self.cursor.end, length));
 
                     self.cursor.start = input.selectionStart;
-                    self.cursor.end = self.cursor.start;
+                    self.cursor.end = input.selectionEnd;
 
                 // insertion
-                } else if (input.selectionStart > start){
-                    var chars = input.value.slice(start, input.selectionStart);
+                } else if (input.selectionStart > self.cursor.start){
+                    var chars = input.value.slice(self.cursor.start, input.selectionStart);
                     console.log('collapsed', chars);
 
-                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], start, chars));
+                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.cursor.start, chars));
 
                     self.cursor.start += chars.length;
                     self.cursor.end = self.cursor.start;
                 }
+
             // range
             } else {
                 var chars = input.value.slice(input.selectionStart, input.selectionEnd);
                 console.log('range', chars);
 
-                // ????
                 self.cursor.start = input.selectionStart;
                 self.cursor.end = input.selectionEnd;
+
+                // need to removeText for this range,
+                // then insert text for this command
             }
 
 
@@ -135,6 +152,11 @@ function Main(config){
     }
 }
 
+Main.prototype.serialize = function(){
+    return serializeBlock(this.data.blocks[0]);
+};
+
+// should be private API
 Main.prototype.clean = function(updatedBlock){
     for (var key in updatedBlock.ranges){
         updatedBlock.ranges[key] = cleanRanges(updatedBlock.ranges[key]);
@@ -142,10 +164,7 @@ Main.prototype.clean = function(updatedBlock){
     return updatedBlock;
 };
 
-Main.prototype.serialize = function(){
-    return serializeBlock(this.data.blocks[0]);
-};
-
+// should be private API
 Main.prototype.focusInput = function(){
     var cursor = this.getCursor();
     if (!cursor) {

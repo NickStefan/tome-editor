@@ -3,7 +3,7 @@ function updateRanges(ranges, index, length){
 
     var updated = [];
     var current;
-
+    debugger;
     for (var i = 0; i < ranges.length; i++){
         current = ranges[i];
 
@@ -49,7 +49,11 @@ function updateRanges(ranges, index, length){
             // if index is right of start, but left of end, change end by length
             //       i
             // c ----------
-            else if (index >= current.start && index <= current.end){
+            //
+            // if
+            // c -----
+            //         i the i shrinks c ... thats why +1 end
+            else if (index >= current.start && index <= current.end + 1){
                 current.end += length;
                 // but what if the index change goes leftward past start of c?
                 if (current.start > (index + length)){
@@ -75,6 +79,7 @@ function updateRanges(ranges, index, length){
                 }
             }
         }
+        if (current === undefined) debugger;
         updated.push(current);
     }
 
