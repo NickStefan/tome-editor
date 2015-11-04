@@ -44,70 +44,101 @@ function Main(config){
             // console.dir(e);
 
             switch (e.keyCode) {
-                case 37:
-                    // left
-                case 39:
-                    // right
+                case 37: // left
+                case 39: // right
                     break;
 
                 // in the future, this will trigger a check for which block you're in
-                case 38:
-                    // up
-                case 40:
-                    // down
+                case 38: // up
+                case 40: // down
                     break;
 
                 // will split block later
-                case 13:
-                    // enter
+                case 13: // enter
                     break;
-                case 27:
-                    // escape
+                case 27: // escape
                     break;
-                case 16:
-                    // shift
+                case 16: // shift
                     break;
-                // case 9:
-                    // tab
+                case 18: // alt / option
+                    break;
+                // case 9: // tab
                     // break;
-                // case ??:
-                    // command ?
-                // case ??:
-                    // fn ?
+                // case ??: // command ?
+                // case ??: // fn ?
                 // fn keys?
 
                 // FOCUS THE INPUT BOX
-                case 46:
-                    // backspace
-                case 8:
-                    // delete
-                case 18:
-                    // alt / option
+                case 46: // backspace
+                case 8:  // delete
                 default:
                     self.focusInput();
             }
             return true;
         });
 
-        // TODO:
-        // DON'T ADVANCE CURSOR ON 'OPTION' / composition
-        // SEE RANGE CODE IN INPUT HANDLER BELOW
+        // TODO repeating composition char (holding it down) overwrites ahead of it
+        // wonder if its something to do with the composition end composition start order of events
+
+        // http://blog.evanyou.me/2014/01/03/composition-event/
+        this.hiddenInput
+        .addEventListener('compositionstart', function(e){
+            var input = this;
+            self.composition = {
+                state: 'start',
+                index: input.selectionStart
+            };
+            console.log(self.composition);
+        });
+
+        this.hiddenInput
+        .addEventListener('compositionend', function(e){
+            // TODO
+            // need to handle "zero character" composition end
+            self.composition = {
+                state: 'end',
+                index: self.composition.index
+            };
+            console.log(self.composition);
+        });
 
         this.hiddenInput
         .addEventListener('input', function(e){
             var input = this;
-
-            // need to cover more cases:
-            // el has range, hit delete
-            // input will be collapsed, but deleted a range
-            //
-            // el is collapsed, hit delete
-            // input will be collapsed, but deleted collapsed
-            //
-            // el is collapsed, hit paste
-            // input will be range, but el was collapsed?
-
             var blockStart = self.cursor.blockStart;
+
+            if (self.composition !== undefined){
+                var chars = input.value.slice(self.composition.index, input.selectionEnd);
+                console.log('compose', chars, self.composition.index);
+
+                if (self.composition.state === 'start'){
+                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
+                    self.el.innerHTML = self.serialize();
+
+                    self.composition.state = 'composing';
+
+                } else if (self.composition.state === 'composing'){
+
+                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], self.composition.index + 1, chars.length));
+                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
+
+                    self.el.innerHTML = self.serialize();
+
+                } else if (self.composition.state === 'end'){
+
+                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], self.composition.index + 1, chars.length));
+                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
+
+                    self.cursor.start = input.selectionStart;
+                    self.cursor.end = input.selectionEnd;
+
+                    self.el.innerHTML = self.serialize();
+                    self.restoreCursor();
+
+                    self.composing = undefined;
+                }
+                return;
+            }
 
             // collapsed
             if (input.selectionStart === input.selectionEnd){
@@ -127,6 +158,7 @@ function Main(config){
                     console.log('collapsed', chars);
 
                     self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.cursor.start, chars));
+                    console.log(self.data.blocks[blockStart].rawText);
 
                     self.cursor.start += chars.length;
                     self.cursor.end = self.cursor.start;
@@ -139,9 +171,6 @@ function Main(config){
 
                 self.cursor.start = input.selectionStart;
                 self.cursor.end = input.selectionEnd;
-
-                // need to removeText for this range,
-                // then insert text for this command
             }
 
 
