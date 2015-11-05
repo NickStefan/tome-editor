@@ -1,6 +1,7 @@
 
 function Priority(options){
-    this.arr = options.initialNodes || [];
+    var arr = options.initialNodes || [];
+    this.arr = arr.slice();
     this.prioritize = options.prioritize;
 
     if (this.arr.length){

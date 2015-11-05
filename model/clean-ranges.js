@@ -50,10 +50,18 @@ function cleanRanges(ranges){
             continue;
 
         } else if (!ranges.peek() && next !== null){
+            // TODO
+            if (next === undefined || current === undefined){
+                debugger;
+            }
             cleanedRanges.push(current);
             cleanedRanges.push(next);
 
         } else {
+            // TODO
+            if (current === undefined){
+                debugger;
+            }
             cleanedRanges.push(current);
             current = next;
         }

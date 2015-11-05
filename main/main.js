@@ -40,45 +40,55 @@ function Main(config){
         this.el
         .addEventListener('keydown', function(e){
             // http://www.quirksmode.org/js/keys.html
-            // console.log('keydown');
-            // console.dir(e);
+
+            // hot keys
+            if (e.metaKey || e.ctrlKey){
+                switch (e.keyCode){
+                    case 73: // i
+                        // self.applyStyle({name: 'fontStyle', value: 'italic'});
+                    case 66: // b
+                        // self.applyStyle({name: 'fontWeight', value: 700});
+                    case 85: // u
+                        // self.applyStyle({name: 'textDecoration', value: 'underline'});
+                        return false;
+                        break;
+                }
+            }
 
             switch (e.keyCode) {
+
+                // ARROWS
                 case 37: // left
                 case 39: // right
-                    break;
-
-                // in the future, this will trigger a check for which block you're in
                 case 38: // up
                 case 40: // down
                     break;
 
-                // will split block later
-                case 13: // enter
+                case 13: // enter === will split block later
                     break;
+
                 case 27: // escape
-                    break;
                 case 16: // shift
-                    break;
                 case 18: // alt / option
+                case 91: // command/meta
+                case 93: // command/meta
                     break;
+
                 // case 9: // tab
                     // break;
-                // case ??: // command ?
                 // case ??: // fn ?
                 // fn keys?
 
                 // FOCUS THE INPUT BOX
                 case 46: // backspace
-                case 8:  // delete
+                case 8:  // delete --- need to handle when its the first character of a block???
                 default:
                     self.focusInput();
             }
             return true;
         });
 
-        // TODO repeating composition char (holding it down) overwrites ahead of it
-        // wonder if its something to do with the composition end composition start order of events
+
 
         // http://blog.evanyou.me/2014/01/03/composition-event/
         this.hiddenInput
@@ -88,28 +98,34 @@ function Main(config){
                 state: 'start',
                 index: input.selectionStart
             };
-            console.log(self.composition);
         });
 
         this.hiddenInput
         .addEventListener('compositionend', function(e){
-            // TODO
-            // need to handle "zero character" composition end
             self.composition = {
                 state: 'end',
                 index: self.composition.index
             };
-            console.log(self.composition);
+        });
+
+        this.hiddenInput
+        .addEventListener('keydown', function(e){
+            // prevent starting any new compositions when in the input
+            if (e.altKey){
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
         });
 
         this.hiddenInput
         .addEventListener('input', function(e){
             var input = this;
             var blockStart = self.cursor.blockStart;
+            var collapsed = self.cursor.start === self.cursor.end;
 
             if (self.composition !== undefined){
                 var chars = input.value.slice(self.composition.index, input.selectionEnd);
-                console.log('compose', chars, self.composition.index);
 
                 if (self.composition.state === 'start'){
                     self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
@@ -135,7 +151,7 @@ function Main(config){
                     self.el.innerHTML = self.serialize();
                     self.restoreCursor();
 
-                    self.composing = undefined;
+                    self.composition = undefined;
                 }
                 return;
             }
@@ -144,7 +160,7 @@ function Main(config){
             if (input.selectionStart === input.selectionEnd){
 
                 // deletion
-                if (input.selectionEnd < self.cursor.end){
+                if (collapsed && input.selectionEnd < self.cursor.end){
                     var length = self.cursor.end - input.selectionEnd;
 
                     self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], self.cursor.end, length));
@@ -152,18 +168,28 @@ function Main(config){
                     self.cursor.start = input.selectionStart;
                     self.cursor.end = input.selectionEnd;
 
-                // insertion
-                } else if (input.selectionStart > self.cursor.start){
+                // overwrite
+                } else if (!collapsed){
+                    var overwrite = self.cursor.end - self.cursor.start;
                     var chars = input.value.slice(self.cursor.start, input.selectionStart);
-                    console.log('collapsed', chars);
+                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], self.cursor.end, overwrite));
+                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.cursor.start, chars));
+
+                    self.cursor.start = input.selectionStart;
+                    self.cursor.end = self.cursor.start;
+
+                // insertion
+                } else if (collapsed && input.selectionStart > self.cursor.start){
+                    var chars = input.value.slice(self.cursor.start, input.selectionStart);
 
                     self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.cursor.start, chars));
-                    console.log(self.data.blocks[blockStart].rawText);
 
-                    self.cursor.start += chars.length;
+                    self.cursor.start = input.selectionStart;
                     self.cursor.end = self.cursor.start;
                 }
 
+
+            // DOES THIS EVER GET TRIGGERED???
             // range
             } else {
                 var chars = input.value.slice(input.selectionStart, input.selectionEnd);
