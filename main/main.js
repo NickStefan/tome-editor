@@ -1,4 +1,6 @@
 import {serializeBlock} from '../serialize/serialize-block';
+import {applyRange} from '../model/apply-range';
+import {clean} from '../model/clean';
 
 import {
     inputInputHandler,
@@ -57,12 +59,38 @@ function Main(config){
     }
 }
 
-Main.prototype.applyStyle = function(range){
-    // TODO
+Main.prototype.applyRange = function(range){
+    var cursor = this.getCursor();
+    if (!cursor) {
+        return;
+    } else {
+        this.cursor = cursor;
+    }
+    var blockStart = cursor.blockStart;
+
+    range.start = range.start || cursor.start;
+    range.end = range.end || cursor.end;
+
+    this.data.blocks[blockStart].ranges[ range.name ] = applyRange(this.data.blocks[blockStart].ranges[ range.name ], range);
+    this.data.blocks[blockStart] = clean(this.data.blocks[blockStart]);
+
+    this.el.innerHTML = this.serialize();
+    this.restoreCursor();
 };
 
 // will change to a serializePage method ???
 Main.prototype.serialize = function(){
+    window.data = this.data;
+    // IF CAUGHT PLEASE FIGURE OUT WHY RANGES SOMETIMES BECOME UNDEFINED!
+    if (this.data.blocks[0].ranges.hasOwnProperty('fontStyle') && this.data.blocks[0].ranges.fontStyle.hasOwnProperty(0) && this.data.blocks[0].ranges.fontStyle[0] === undefined){
+        debugger;
+    }
+    if (this.data.blocks[0].ranges.hasOwnProperty('fontWeight') && this.data.blocks[0].ranges.fontWeight.hasOwnProperty(0) && this.data.blocks[0].ranges.fontWeight[0] === undefined){
+        debugger;
+    }
+    if (this.data.blocks[0].ranges.hasOwnProperty('textDecoration') && this.data.blocks[0].ranges.textDecoration.hasOwnProperty(0) && this.data.blocks[0].ranges.textDecoration[0] === undefined){
+        debugger;
+    }
     return serializeBlock(this.data.blocks[0]);
 };
 

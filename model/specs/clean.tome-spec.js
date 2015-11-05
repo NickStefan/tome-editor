@@ -32,4 +32,29 @@ describe('Clean Ranges', function() {
         expect(cleanedBlock).to.deep.equal(expectedBlock);
     });
 
+    it('should merge all identical \'same value, same type\' ranges', function(){
+
+        var block =
+        {
+            ranges: {
+                fontWeight: [
+                        { name: 'fontWeight', value: '700', start: 8, end: 13  },
+                        { name: 'fontWeight', value: '700', start: 8, end: 13  }
+                    ]
+                }
+        };
+
+        var cleanedBlock = clean(block);
+        var expectedBlock =
+        {
+            ranges: {
+                fontWeight: [
+                    { name: 'fontWeight', value: '700', start: 8, end: 13  }
+                ]
+            }
+        };
+
+        expect(cleanedBlock).to.deep.equal(expectedBlock);
+    });
+
 });

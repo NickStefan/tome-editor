@@ -1,5 +1,5 @@
 
-function applyRange(ranges, newRange){
+function applyRange(ranges=[], newRange){
 
     // need to iterate the entire ranges array
     // shrink ALL conflicting ranges (same type, different value)

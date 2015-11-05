@@ -87,5 +87,22 @@ describe('Apply Range', function() {
         expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);
     });
 
+    it('should leave exactly duplicate same value ranges, and leave them for clean', function(){
+        var fontWeightRanges = [
+            { name: 'fontWeight', value: '700', start: 11, end: 18}
+        ];
+
+        var newFontWeightRanges = applyRange(fontWeightRanges, {
+            name: 'fontWeight', value: '700', start: 11, end: 18
+        });
+
+        var expectedFontWeightRanges = [
+            { name: 'fontWeight', value: '700', start: 11, end: 18},
+            { name: 'fontWeight', value: '700', start: 11, end: 18}
+        ];
+
+        expect(newFontWeightRanges).to.deep.equal(expectedFontWeightRanges);
+    });
+
 
 });

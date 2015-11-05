@@ -4,11 +4,6 @@ function updateRanges(ranges, index, length){
     var updated = [];
     var current;
 
-    // TODO
-    if (ranges[0] === undefined){
-        debugger;
-    }
-
     for (var i = 0; i < ranges.length; i++){
         current = ranges[i];
 

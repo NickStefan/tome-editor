@@ -7,11 +7,21 @@ function elKeydownHandler(self){
         if (e.metaKey || e.ctrlKey){
             switch (e.keyCode){
                 case 73: // i
-                    // self.applyStyle({name: 'fontStyle', value: 'italic'});
+                    e.preventDefault();
+                    e.stopPropagation();
+                    self.applyRange({name: 'fontStyle', value: 'italic'});
+                    return false;
+                    break;
                 case 66: // b
-                    // self.applyStyle({name: 'fontWeight', value: 700});
+                    e.preventDefault();
+                    e.stopPropagation();
+                    self.applyRange({name: 'fontWeight', value: 700});
+                    return false;
+                    break;
                 case 85: // u
-                    // self.applyStyle({name: 'textDecoration', value: 'underline'});
+                    e.preventDefault();
+                    e.stopPropagation();
+                    self.applyRange({name: 'textDecoration', value: 'underline'});
                     return false;
                     break;
             }
