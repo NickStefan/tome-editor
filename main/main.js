@@ -2,7 +2,7 @@ import {serializeBlock} from '../serialize/serialize-block';
 
 import {insertText} from '../model/insert-text';
 import {removeText} from '../model/remove-text';
-import {cleanRanges} from '../model/clean-ranges';
+import {clean} from '../model/clean';
 
 import {getCursor} from '../cursor/get-cursor';
 import {restoreCursor} from '../cursor/restore-cursor';
@@ -128,22 +128,22 @@ function Main(config){
                 var chars = input.value.slice(self.composition.index, input.selectionEnd);
 
                 if (self.composition.state === 'start'){
-                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
+                    self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
                     self.el.innerHTML = self.serialize();
 
                     self.composition.state = 'composing';
 
                 } else if (self.composition.state === 'composing'){
 
-                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], self.composition.index + 1, chars.length));
-                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
+                    self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], self.composition.index + 1, chars.length));
+                    self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
 
                     self.el.innerHTML = self.serialize();
 
                 } else if (self.composition.state === 'end'){
 
-                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], self.composition.index + 1, chars.length));
-                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
+                    self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], self.composition.index + 1, chars.length));
+                    self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
 
                     self.cursor.start = input.selectionStart;
                     self.cursor.end = input.selectionEnd;
@@ -163,7 +163,7 @@ function Main(config){
                 if (collapsed && input.selectionEnd < self.cursor.end){
                     var length = self.cursor.end - input.selectionEnd;
 
-                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], self.cursor.end, length));
+                    self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], self.cursor.end, length));
 
                     self.cursor.start = input.selectionStart;
                     self.cursor.end = input.selectionEnd;
@@ -172,8 +172,8 @@ function Main(config){
                 } else if (!collapsed){
                     var overwrite = self.cursor.end - self.cursor.start;
                     var chars = input.value.slice(self.cursor.start, input.selectionStart);
-                    self.data.blocks[blockStart] = self.clean(removeText(self.data.blocks[blockStart], self.cursor.end, overwrite));
-                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.cursor.start, chars));
+                    self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], self.cursor.end, overwrite));
+                    self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], self.cursor.start, chars));
 
                     self.cursor.start = input.selectionStart;
                     self.cursor.end = self.cursor.start;
@@ -182,7 +182,7 @@ function Main(config){
                 } else if (collapsed && input.selectionStart > self.cursor.start){
                     var chars = input.value.slice(self.cursor.start, input.selectionStart);
 
-                    self.data.blocks[blockStart] = self.clean(insertText(self.data.blocks[blockStart], self.cursor.start, chars));
+                    self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], self.cursor.start, chars));
 
                     self.cursor.start = input.selectionStart;
                     self.cursor.end = self.cursor.start;
@@ -209,14 +209,6 @@ function Main(config){
 
 Main.prototype.serialize = function(){
     return serializeBlock(this.data.blocks[0]);
-};
-
-// should be private API
-Main.prototype.clean = function(updatedBlock){
-    for (var key in updatedBlock.ranges){
-        updatedBlock.ranges[key] = cleanRanges(updatedBlock.ranges[key]);
-    }
-    return updatedBlock;
 };
 
 // should be private API

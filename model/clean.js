@@ -1,5 +1,12 @@
 import {Priority} from '../utils/priority';
 
+function clean(updatedBlock){
+    for (var key in updatedBlock.ranges){
+        updatedBlock.ranges[key] = cleanRanges(updatedBlock.ranges[key]);
+    }
+    return updatedBlock;
+};
+
 function cleanRanges(ranges){
     ranges = new Priority({
         prioritize: [
@@ -70,5 +77,5 @@ function cleanRanges(ranges){
     return cleanedRanges;
 }
 
-export default cleanRanges;
-export {cleanRanges};
+export default clean;
+export { clean };
