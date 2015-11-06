@@ -12,8 +12,8 @@ function restoreCursor(cursor){
 
     var range = document.createRange();
 
-    range.setStart(starting.node, starting.offset);
-    range.setEnd(ending.node, ending.offset);
+    range.setStart(starting.node || startBlock, starting.offset || 0);
+    range.setEnd(ending.node || endBlock, ending.offset || 0);
 
     nativeSelection.removeAllRanges();
     nativeSelection.addRange(range);

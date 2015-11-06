@@ -81,21 +81,14 @@ Main.prototype.applyRange = function(range){
 // will change to a serializePage method ???
 Main.prototype.serialize = function(){
     window.data = this.data;
-    // IF CAUGHT PLEASE FIGURE OUT WHY RANGES SOMETIMES BECOME UNDEFINED!
-    if (this.data.blocks[0].ranges.hasOwnProperty('fontStyle') && this.data.blocks[0].ranges.fontStyle.hasOwnProperty(0) && this.data.blocks[0].ranges.fontStyle[0] === undefined){
-        debugger;
-    }
-    if (this.data.blocks[0].ranges.hasOwnProperty('fontWeight') && this.data.blocks[0].ranges.fontWeight.hasOwnProperty(0) && this.data.blocks[0].ranges.fontWeight[0] === undefined){
-        debugger;
-    }
-    if (this.data.blocks[0].ranges.hasOwnProperty('textDecoration') && this.data.blocks[0].ranges.textDecoration.hasOwnProperty(0) && this.data.blocks[0].ranges.textDecoration[0] === undefined){
-        debugger;
-    }
     return serializeBlock(this.data.blocks[0]);
 };
 
 // maybe make private ???
 Main.prototype.focusInput = function(){
+
+    // maybe this should go into an onblur handler
+    // that way we'll always have cursor when clicking onto UI stuff
     var cursor = this.getCursor();
     if (!cursor) {
         return;

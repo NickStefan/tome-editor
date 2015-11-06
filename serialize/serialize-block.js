@@ -53,6 +53,12 @@ function serializeBlock (block){
             text = closeTags(text, i, toBeOpened, toBeClosed);
         }
     }
+
+    // if no characters, need a BR for something to click the cursor into
+    if (!char){
+        text += '<br>';
+    }
+
     return text + '</' + block.blockType.toLowerCase() + '>';
 }
 

@@ -19,10 +19,15 @@ function cleanRanges(ranges){
                 priority: 'max'
             }
         ],
-        initialNodes: ranges
+        initialNodes: ranges.slice()
     });
 
     var cleanedRanges = [];
+
+    if (!ranges.peek()){
+        return cleanedRanges;
+    }
+
     var current = ranges.pop();
     var next;
 
@@ -57,18 +62,10 @@ function cleanRanges(ranges){
             continue;
 
         } else if (!ranges.peek() && next !== null){
-            // TODO
-            if (next === undefined || current === undefined){
-                debugger;
-            }
             cleanedRanges.push(current);
             cleanedRanges.push(next);
 
         } else {
-            // TODO
-            if (current === undefined){
-                debugger;
-            }
             cleanedRanges.push(current);
             current = next;
         }
