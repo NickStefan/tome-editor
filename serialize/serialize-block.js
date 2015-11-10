@@ -41,9 +41,13 @@ function serializeBlock (block){
 
     var char;
     for (var i = 0; i < block.rawText.length; i++ ){
+
         char = block.rawText[i];
 
-        if (toBeOpened.peek() && i === toBeOpened.peek().start && toBeOpened.peek().end !== toBeOpened.peek().start){
+        if (toBeOpened.peek() && i === toBeOpened.peek().start){
+            while (toBeOpened.peek() && i === toBeOpened.peek().start && toBeOpened.peek().end === toBeOpened.peek().start){
+                toBeOpened.pop();
+            }
             text = openTags(text, i, toBeOpened, toBeClosed);
         }
 
@@ -71,9 +75,26 @@ function openTags(text, i, toBeOpened, toBeClosed){
     if (toBeOpened.peek() && i === toBeOpened.peek().start){
         var range = toBeOpened.pop();
         if (toBeClosed.peek() && range.end > toBeClosed.peek().end){
-            text = closeSpan(text, toBeClosed.peek());
-            text = openSpan(text, range);
-            text = openSpan(text, toBeClosed.peek());
+            // NEED TO CLOSE ALL toBeCLosed,
+            // and REOPEN by closing latest priority (include the new range in this priority)
+            for (var j = 0; j < toBeClosed.toArray().length; j++){
+                text = closeSpan(text, {});
+            }
+
+            var reOpen = new Priority({
+                prioritize: [
+                    {
+                        name: 'end',
+                        priority: 'max'
+                    }
+                ],
+                initialNodes: toBeClosed.toArray().concat(range)
+            });
+
+            while (reOpen.peek()){
+                text = openSpan(text, reOpen.pop());
+            }
+
         } else {
             text = openSpan(text, range);
         }

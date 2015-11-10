@@ -34,6 +34,9 @@ function Main(config){
         this.el
         .innerHTML = this.serialize();
 
+
+
+        // EL HANDLERS
         this.el
         .addEventListener('change', function(e){
             if (self.el.offsetWidth !== self.hiddenInput.offsetWidth){
@@ -42,7 +45,19 @@ function Main(config){
         });
 
         this.el
+        .addEventListener('blur', function(e){
+            // cache cursor for when clicking on styling UI
+            var cursor = self.getCursor();
+            if (cursor) {
+                self.cursor = cursor;
+            }
+            return true;
+        });
+
+        this.el
         .addEventListener('keydown', elKeydownHandler(self));
+
+
 
         // INPUT HANDLERS
         this.hiddenInput
@@ -56,16 +71,18 @@ function Main(config){
 
         this.hiddenInput
         .addEventListener('input', inputInputHandler(self));
+
+        window._testTome = this;
     }
 }
 
 Main.prototype.applyRange = function(range){
-    var cursor = this.getCursor();
-    if (!cursor) {
+    this.cursor = this.cursor || this.getCursor();
+    if (!this.cursor){
         return;
-    } else {
-        this.cursor = cursor;
     }
+
+    var cursor = this.cursor;
     var blockStart = cursor.blockStart;
 
     range.start = range.start || cursor.start;
@@ -80,15 +97,11 @@ Main.prototype.applyRange = function(range){
 
 // will change to a serializePage method ???
 Main.prototype.serialize = function(){
-    window.data = this.data;
     return serializeBlock(this.data.blocks[0]);
 };
 
 // maybe make private ???
 Main.prototype.focusInput = function(){
-
-    // maybe this should go into an onblur handler
-    // that way we'll always have cursor when clicking onto UI stuff
     var cursor = this.getCursor();
     if (!cursor) {
         return;
@@ -111,6 +124,25 @@ Main.prototype.getCursor = function(){
 
 Main.prototype.restoreCursor = function(cursor){
     restoreCursor.call(this, cursor);
+};
+
+Main.prototype.createTestUI = function(UI){
+    var self = this;
+    var uiContainer = document.createElement('DIV');
+
+    for (var i=0; i < UI.length; i++){
+        var data = UI[i];
+        switch (data.el){
+            case 'button':
+                var el = document.createElement('BUTTON');
+                el.innerHTML = data.label;
+                el.addEventListener(data.event, data.handler(self));
+                break;
+        }
+        uiContainer.appendChild(el);
+    }
+
+    document.body.appendChild(uiContainer);
 };
 
 if (window){

@@ -85,4 +85,50 @@ describe('Block Serializer', function() {
 
         expect(serializeBlock(blockMultiPartialOverlappedStyles)).to.equal(blockMultiPartialOverlappedStylesHTML);
     });
+
+    it('should serialize many multiple partially overlapping nested style ranges', function(){
+
+        var state =
+        {
+            "blockType": "P",
+            "rawText": "My name is bob.",
+            "ranges": {
+                "fontWeight": [
+                    {
+                        "name": "fontWeight",
+                        "value": "700",
+                        "start": 11,
+                        "end": 14
+                    }
+                ],
+                "fontStyle": [
+                    {
+                        "name": "fontStyle",
+                        "value": "italic",
+                        "start": 8,
+                        "end": 15
+                    }
+                ],
+                "color": [
+                    {
+                        "name": "color",
+                        "value": "skyblue",
+                        "start": 0,
+                        "end": 10
+                    }
+                ],
+                "fontFamily": [
+                    {
+                        "name": "fontFamily",
+                        "value": "arial",
+                        "start": 0,
+                        "end": 12
+                    }
+                ]
+            }
+        };
+
+        var goal = '<p><span style="font-family: arial;"><span style="color: skyblue;">My name </span></span><span style="font-style: italic;"><span style="font-family: arial;"><span style="color: skyblue;">is</span> </span></span><span style="font-style: italic;"><span style="font-weight: 700;"><span style="font-family: arial;">b</span>ob</span>.</span></p>';
+        expect(serializeBlock(state)).to.equal(goal);
+    });
 });

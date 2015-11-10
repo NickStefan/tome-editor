@@ -42,7 +42,7 @@ function updateRanges(ranges, index, length){
             // if index is left of start, change start and end by length
             // i
             //     c --------------
-            if (index < current.start){
+            if (index <= current.start){
                 current.start += length;
                 current.end += length;
             }

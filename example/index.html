@@ -1,10 +1,106 @@
 <html>
 <head>
-	<title>Example</title>
+    <title>Example</title>
 </head>
 <body>
-	<div data-tome></div>
-	<script src="tome.js"></script>
-	<script src="example.js"></script>
+    <div data-tome></div>
+    <script src="tome.js"></script>
+    <script src="example.js"></script>
+    <script type="text/javascript">
+        var UI = [
+            {
+                label: 'bold',
+                el: 'button',
+                event: 'click',
+                handler: function(self){
+                    return function(e){
+                        self.applyRange({name: 'fontWeight', value: 700 });
+                    }
+                }
+            },
+            {
+                label: 'italic',
+                el: 'button',
+                event: 'click',
+                handler: function(self){
+                    return function(e){
+                        self.applyRange({name: 'fontStyle', value: 'italic'});
+                    }
+                }
+            },
+            {
+                label: 'underline',
+                el: 'button',
+                event: 'click',
+                handler: function(self){
+                    return function(e){
+                        self.applyRange({name: 'textDecoration', value: 'underline'});
+                    }
+                }
+            },
+            {
+                label: 'font',
+                el: 'button',
+                event: 'click',
+                handler: function(self){
+                    return function(e){
+                        self.applyRange({name: 'fontFamily', value: 'arial'});
+                    }
+                }
+            },
+            {
+                label: 'color',
+                el: 'button',
+                event: 'click',
+                handler: function(self){
+                    return function(e){
+                        self.applyRange({name: 'color', value: 'skyblue'});
+                    }
+                }
+            },
+            {
+                label: 'letter spacing',
+                el: 'button',
+                event: 'click',
+                handler: function(self){
+                    return function(e){
+                        self.applyRange({name: 'letterSpacing', value: '3px'});
+                    }
+                }
+            },
+            {
+                label: 'letter case',
+                el: 'button',
+                event: 'click',
+                handler: function(self){
+                    return function(e){
+                        self.applyRange({name: 'textTransform', value: 'uppercase'});
+                    }
+                }
+            },
+            {
+                label: 'font size',
+                el: 'button',
+                event: 'click',
+                handler: function(self){
+                    return function(e){
+                        self.applyRange({name: 'fontSize', value: '20px'});
+                    }
+                }
+            },
+            // {
+            //     label: 'link',
+            //     el: 'button',
+            //     event: 'click',
+            //     handler: function(self){
+            //         return function(e){
+            //             self.applyRange({name: 'LINK', value: 'http://www.google.com'});
+            //         }
+            //     }
+            // }
+        ];
+
+        window._testTome.createTestUI(UI);
+    </script>
 </body>
 </html>

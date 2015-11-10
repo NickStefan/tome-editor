@@ -70,6 +70,14 @@ function inputInputHandler(self){
 
                 self.cursor.start = input.selectionStart;
                 self.cursor.end = self.cursor.start;
+
+            // backspace
+            } else if (collapsed && input.selectionStart === self.cursor.start && input.value.length !== self.data.blocks[blockStart].rawText.length){
+
+                self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], self.cursor.end + 1, 1));
+
+                self.cursor.start = input.selectionStart;
+                self.cursor.end = input.selectionEnd;
             }
 
 
