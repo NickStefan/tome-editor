@@ -7,29 +7,62 @@ function getCursor(){
 
     var nativeRange = window.getSelection().getRangeAt(0);
 
-    // recurse upward until parent is contentEditable
-    // get index of which block you are
-    var startBlock = getTargetParentChild(nativeRange.startContainer, '[data-tome]');
-    var blockStart = indexOf( startBlock.parentElement.childNodes, startBlock );
+    var deepestStartBlock = getTarget(nativeRange.startContainer, 'P, LI, UL, OL, H1, H2, H3, H4, H5');
+    var startPath = [];
+    // get the character index of the block
+    startPath.unshift(countFromLeft(deepestStartBlock, nativeRange.startContainer, nativeRange.startOffset));
+    // prepend the block paths
+    getFullBlockPath(startPath, deepestStartBlock);
 
-    // recurse upward until parent is contentEditable
-    // get index of which block you are
-    var endBlock = getTargetParentChild(nativeRange.endContainer, '[data-tome]');
-    var blockEnd = indexOf( endBlock.parentElement.childNodes, endBlock );
-
-    // walk left to beginning of block, count chars
-    var start = countFromLeft(startBlock, nativeRange.startContainer, nativeRange.startOffset);
-
-    // walk right to end of block, count chars
-    var end = countFromLeft(endBlock, nativeRange.endContainer, nativeRange.endOffset);
+    var deepestEndBlock = getTarget(nativeRange.endContainer, 'P, LI, UL, OL, H1, H2, H3, H4, H5');
+    var endPath = [];
+    // get the character index of the block
+    endPath.unshift(countFromLeft(deepestEndBlock, nativeRange.endContainer, nativeRange.endOffset));
+    // prepend the block paths
+    getFullBlockPath(endPath, deepestEndBlock);
 
     return {
-        blockStart: blockStart,
-        blockEnd: blockEnd,
-        start: start,
-        end: end,
+        startPath: startPath,
+        endPath: endPath,
         nativeRange: nativeRange
     };
+
+    // // recurse upward until parent is contentEditable
+    // // get index of which block you are
+    // var startBlock = getTargetParentChild(nativeRange.startContainer, '[data-tome]');
+    // var blockStart = indexOf( startBlock.parentElement.childNodes, startBlock );
+
+    // // recurse upward until parent is contentEditable
+    // // get index of which block you are
+    // var endBlock = getTargetParentChild(nativeRange.endContainer, '[data-tome]');
+    // var blockEnd = indexOf( endBlock.parentElement.childNodes, endBlock );
+
+    // // walk left to beginning of block, count chars
+    // var start = countFromLeft(startBlock, nativeRange.startContainer, nativeRange.startOffset);
+
+    // // walk right to end of block, count chars
+    // var end = countFromLeft(endBlock, nativeRange.endContainer, nativeRange.endOffset);
+
+    // return {
+    //     blockStart: blockStart,
+    //     blockEnd: blockEnd,
+    //     start: start,
+    //     end: end,
+    //     nativeRange: nativeRange
+    // };
+}
+
+function getFullBlockPath(arr, block){
+    if (matchesSelector(block, '[data-tome]')){
+        return;
+    }
+    if (matchesSelector(block, 'P, LI, UL, OL, H1, H2, H3, H4, H5')){
+        var i = indexOf( block.parentElement.childNodes, block );
+        arr.unshift(i);
+    }
+    if (block.parentElement){
+        getFullBlockPath(arr, block.parentElement);
+    }
 }
 
 
@@ -76,11 +109,19 @@ function collectTextNodes(element, texts) {
     return texts;
 }
 
-function getTargetParentChild(el, selector){
-    if (matchesSelector(el.parentElement, selector)){
+// function getTargetParentChild(el, selector){
+//     if (matchesSelector(el.parentElement, selector)){
+//         return el;
+//     } else {
+//         return getTargetParentChild(el.parentElement, selector);
+//     }
+// }
+
+function getTarget(el, selector){
+    if (matchesSelector(el, selector)){
         return el;
     } else {
-        return getTargetParentChild(el.parentElement, selector);
+        return getTarget(el.parentElement, selector);
     }
 }
 

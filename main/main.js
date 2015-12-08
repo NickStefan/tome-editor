@@ -83,10 +83,10 @@ Main.prototype.applyRange = function(range){
     }
 
     var cursor = this.cursor;
-    var blockStart = cursor.blockStart;
+    var blockStart = cursor.startPath.slice(0, -1).pop();
 
-    range.start = range.start || cursor.start;
-    range.end = range.end || cursor.end;
+    range.start = range.start || cursor.startPath.slice().pop();
+    range.end = range.end || cursor.endPath.slice().pop();
 
     this.data.blocks[blockStart].ranges[ range.name ] = applyRange(this.data.blocks[blockStart].ranges[ range.name ], range);
     this.data.blocks[blockStart] = clean(this.data.blocks[blockStart]);
@@ -109,13 +109,21 @@ Main.prototype.focusInput = function(){
         this.cursor = cursor;
     }
 
-    var blockStart = cursor.blockStart;
-    var start = cursor.start;
-    var end = cursor.end;
+    var start = cursor.startPath.slice().pop();
+    var end = cursor.endPath.slice().pop();
+    var block = cursor.startPath.slice(0, -1).pop();
 
     this.hiddenInput.focus();
-    this.hiddenInput.value = this.data.blocks[blockStart].rawText;
+    this.hiddenInput.value = this.data.blocks[block].rawText;
     this.hiddenInput.setSelectionRange(start, end);
+
+    // var blockStart = cursor.blockStart;
+    // var start = cursor.start;
+    // var end = cursor.end;
+
+    // this.hiddenInput.focus();
+    // this.hiddenInput.value = this.data.blocks[blockStart].rawText;
+    // this.hiddenInput.setSelectionRange(start, end);
 };
 
 Main.prototype.getCursor = function(){

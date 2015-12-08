@@ -3,25 +3,44 @@ function restoreCursor(cursor){
 
     var nativeSelection = window.getSelection();
 
-    var startBlock = getBlockFromIndex(this.el, cursor.blockStart);
-    var endBlock = getBlockFromIndex(this.el, cursor.blockEnd);
+    var deepestStartBlock = getDeepestBlockFromPath(this.el, cursor.startPath);
+    var deepestEndBlock = getDeepestBlockFromPath(this.el, cursor.endPath);
 
-    var starting = getTextNodeFromCount(startBlock, cursor.start);
+    var starting = getTextNodeFromCount(deepestStartBlock, last(cursor.startPath));
+    var ending = getTextNodeFromCount(deepestEndBlock, last(cursor.endPath));
 
-    var ending = getTextNodeFromCount(endBlock, cursor.end);
+    // var startBlock = getBlockFromIndex(this.el, cursor.blockStart);
+    // var endBlock = getBlockFromIndex(this.el, cursor.blockEnd);
+
+    // var starting = getTextNodeFromCount(startBlock, cursor.start);
+
+    // var ending = getTextNodeFromCount(endBlock, cursor.end);
 
     var range = document.createRange();
 
-    range.setStart(starting.node || startBlock, starting.offset || 0);
-    range.setEnd(ending.node || endBlock, ending.offset || 0);
+    range.setStart(starting.node || deepestStartBlock, starting.offset || 0);
+    range.setEnd(ending.node || deepestEndBlock, ending.offset || 0);
 
     nativeSelection.removeAllRanges();
     nativeSelection.addRange(range);
 }
 
-function getBlockFromIndex(editableRoot, index){
-    return editableRoot.children[index];
+function last(arr){
+    return arr.length ? arr[ arr.length - 1] : undefined;
 }
+
+function getDeepestBlockFromPath(block, path){
+    var drill = path.slice(0, -1);
+    var current = block;
+    while (drill.length){
+        current = current.childNodes[ drill.shift() ];
+    }
+    return current;
+}
+
+// function getBlockFromIndex(editableRoot, index){
+//     return editableRoot.children[index];
+// }
 
 
 function getTextNodeFromCount(block, targetCount){
