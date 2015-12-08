@@ -37,6 +37,9 @@ function elKeydownHandler(self){
                 break;
 
             case 13: // enter === will split block later
+                // TODO: splitBlock(blocks, blockIndex, charIndex)
+                // need to reset cursor n correct block
+                // maybe need something like self.splitBlock ^^^ aka wrap the splitBlock method with cursor management
                 break;
 
             case 27: // escape

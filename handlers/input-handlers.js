@@ -48,6 +48,8 @@ function inputInputHandler(self){
             return;
         }
 
+        // TODO HANDLE mergBlocks when deleting from 0 char of block??
+
         // collapsed
         if (input.selectionStart === input.selectionEnd){
 

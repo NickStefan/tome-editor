@@ -1,4 +1,4 @@
-import {updateRanges} from './update-ranges';
+import {updateBlockRanges} from './update-ranges';
 import {clean} from './clean';
 
 function mergeBlocks (blocks, blockIndexA, blockIndexB){
@@ -6,7 +6,7 @@ function mergeBlocks (blocks, blockIndexA, blockIndexB){
     var blockB = blocks[blockIndexB];
 
     var blockARanges = JSON.parse(JSON.stringify(blockA.ranges));
-    var blockBRanges = updateRanges(JSON.parse(JSON.stringify(blockB.ranges)), 0, blockB.rawText.length);
+    var blockBRanges = updateBlockRanges(JSON.parse(JSON.stringify(blockB.ranges)), 0, blockA.rawText.length);
 
     // merge blockBranges into blockAranges
     var newRanges = Object.keys(blockBRanges)

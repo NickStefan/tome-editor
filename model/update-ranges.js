@@ -51,12 +51,17 @@ function updateRanges(ranges, index, length){
             //       i
             // c ----------
             else if (index >= current.start && index <= current.end){
-                current.end += length;
                 // but what if the index change goes leftward past start of c?
-                if (current.start > (index + length)){
+                if (current.start > (index + length) && index === current.end){
                     // delete range, dont push to update
                     continue;
+                } else if (current.start > (index + length)){
+                    current.start += length
+                    if (current.start < 0){
+                        current.start = 0;
+                    }
                 }
+                current.end += length;
             }
 
             // if index is right of end, do nothing
@@ -83,5 +88,13 @@ function updateRanges(ranges, index, length){
     return updated;
 }
 
+function updateBlockRanges(blockRanges, index, length){
+    var ranges = {};
+    for (var key in blockRanges){
+        ranges[key] = updateRanges(blockRanges[key], index, length);
+    }
+    return ranges;
+}
+
 export default updateRanges;
-export {updateRanges};
+export {updateRanges, updateBlockRanges};
