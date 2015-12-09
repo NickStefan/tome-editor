@@ -1,4 +1,4 @@
-import {serializeBlock} from '../serialize/serialize-block';
+import {serializeBlocks} from '../serialize/serialize-block';
 import {applyRange} from '../model/apply-range';
 import {clean} from '../model/clean';
 
@@ -97,7 +97,7 @@ Main.prototype.applyRange = function(range){
 
 // will change to a serializePage method ???
 Main.prototype.serialize = function(){
-    return serializeBlock(this.data.blocks[0]);
+    return serializeBlocks(this.data);
 };
 
 // maybe make private ???

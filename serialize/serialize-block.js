@@ -124,5 +124,15 @@ function toCSSName(str){
     return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
+
+
+function serializeBlocks(data){
+    var text = '';
+    for (var block in data.blocks){
+        text += serializeBlock( data.blocks[block] );
+    }
+    return text;
+}
+
 export default serializeBlock;
-export { serializeBlock };
+export { serializeBlock, serializeBlocks };

@@ -56,7 +56,7 @@ function updateRanges(ranges, index, length){
                     // delete range, dont push to update
                     continue;
                 } else if (current.start > (index + length)){
-                    current.start += length
+                    current.start += length;
                     if (current.start < 0){
                         current.start = 0;
                     }
