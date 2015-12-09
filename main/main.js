@@ -1,4 +1,4 @@
-import {serializeBlocks} from '../serialize/serialize-block';
+import {renderBlocks} from '../render/render-block';
 import {applyRange} from '../model/apply-range';
 import {clean} from '../model/clean';
 
@@ -32,7 +32,7 @@ function Main(config){
         .style.whiteSpace = 'pre';
 
         this.el
-        .innerHTML = this.serialize();
+        .innerHTML = this.render();
 
 
 
@@ -91,13 +91,12 @@ Main.prototype.applyRange = function(range){
     this.data.blocks[blockStart].ranges[ range.name ] = applyRange(this.data.blocks[blockStart].ranges[ range.name ], range);
     this.data.blocks[blockStart] = clean(this.data.blocks[blockStart]);
 
-    this.el.innerHTML = this.serialize();
+    this.el.innerHTML = this.render();
     this.restoreCursor();
 };
 
-// will change to a serializePage method ???
-Main.prototype.serialize = function(){
-    return serializeBlocks(this.data);
+Main.prototype.render = function(){
+    return renderBlocks(this.data);
 };
 
 // maybe make private ???

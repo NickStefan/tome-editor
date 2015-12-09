@@ -9,7 +9,7 @@ function flattenRanges(obj){
 }
 
 // serializes block model to to string representation of HTML
-function serializeBlock (block){
+function renderBlock (block){
 
     var text = '<' + block.blockType.toLowerCase() + '>';
 
@@ -126,13 +126,13 @@ function toCSSName(str){
 
 
 
-function serializeBlocks(data){
+function renderBlocks(data){
     var text = '';
     for (var block in data.blocks){
-        text += serializeBlock( data.blocks[block] );
+        text += renderBlock( data.blocks[block] );
     }
     return text;
 }
 
-export default serializeBlock;
-export { serializeBlock, serializeBlocks };
+export default renderBlock;
+export { renderBlock, renderBlocks };

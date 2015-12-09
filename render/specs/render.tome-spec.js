@@ -1,8 +1,8 @@
-import {serializeBlock} from '../serialize-block';
+import {renderBlock} from '../render-block';
 
-describe('Block Serializer', function() {
+describe('Block Renderer', function() {
 
-    it('should serialize a styled range', function () {
+    it('should render a styled range', function () {
 
         var blockSingleStyle =
         {
@@ -16,10 +16,10 @@ describe('Block Serializer', function() {
         };
         var blockSingleStyleHTML = '<p>My name is <span style="font-weight: 700;">bob</span>.</p>';
 
-        expect(serializeBlock(blockSingleStyle)).to.equal(blockSingleStyleHTML);
+        expect(renderBlock(blockSingleStyle)).to.equal(blockSingleStyleHTML);
     });
 
-    it('should serialize multiple styled ranges', function () {
+    it('should render multiple styled ranges', function () {
 
         var blockMultiStyle =
         {
@@ -34,11 +34,11 @@ describe('Block Serializer', function() {
         };
         var blockMultiStyleHTML = '<p>My name is <span style="font-weight: 700;">bob</span>. My name is <span style="font-weight: 700;">Bob Smith</span></p>';
 
-        expect(serializeBlock(blockMultiStyle)).to.equal(blockMultiStyleHTML);
+        expect(renderBlock(blockMultiStyle)).to.equal(blockMultiStyleHTML);
     });
 
 
-    it('should serialize nested styled ranges', function () {
+    it('should render nested styled ranges', function () {
 
         var blockNestedStyle =
         {
@@ -56,12 +56,12 @@ describe('Block Serializer', function() {
         };
         var blockNestedStyleHTML = '<p>My name is <span style="color: green;"><span style="font-weight: 700;">bob</span>. My name is </span><span style="font-weight: 700;"><span style="color: green;">Bob</span> Smith</span></p>';
 
-        expect(serializeBlock(blockNestedStyle)).to.equal(blockNestedStyleHTML);
+        expect(renderBlock(blockNestedStyle)).to.equal(blockNestedStyleHTML);
     });
 
 
 
-    it('should serialize multiple partially overlapping nested style ranges', function () {
+    it('should render multiple partially overlapping nested style ranges', function () {
 
         var blockMultiPartialOverlappedStyles =
         {
@@ -83,10 +83,10 @@ describe('Block Serializer', function() {
 
         var blockMultiPartialOverlappedStylesHTML = '<p>My name <span style="font-style: italic;">is </span><span style="color: green;"><span style="font-style: italic;"><span style="font-weight: 700;">bob</span>.</span> My name is </span><span style="font-weight: 700;"><span style="color: green;">Bob</span> Smith</span></p>';
 
-        expect(serializeBlock(blockMultiPartialOverlappedStyles)).to.equal(blockMultiPartialOverlappedStylesHTML);
+        expect(renderBlock(blockMultiPartialOverlappedStyles)).to.equal(blockMultiPartialOverlappedStylesHTML);
     });
 
-    it('should serialize many multiple partially overlapping nested style ranges', function(){
+    it('should render many multiple partially overlapping nested style ranges', function(){
 
         var state =
         {
@@ -129,6 +129,6 @@ describe('Block Serializer', function() {
         };
 
         var goal = '<p><span style="font-family: arial;"><span style="color: skyblue;">My name </span></span><span style="font-style: italic;"><span style="font-family: arial;"><span style="color: skyblue;">is</span> </span></span><span style="font-style: italic;"><span style="font-weight: 700;"><span style="font-family: arial;">b</span>ob</span>.</span></p>';
-        expect(serializeBlock(state)).to.equal(goal);
+        expect(renderBlock(state)).to.equal(goal);
     });
 });

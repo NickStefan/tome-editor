@@ -17,7 +17,7 @@ function inputInputHandler(self){
 
             if (self.composition.state === 'start'){
                 self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
-                self.el.innerHTML = self.serialize();
+                self.el.innerHTML = self.render();
 
                 self.composition.state = 'composing';
 
@@ -26,7 +26,7 @@ function inputInputHandler(self){
                 self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], self.composition.index + 1, chars.length));
                 self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], self.composition.index, chars));
 
-                self.el.innerHTML = self.serialize();
+                self.el.innerHTML = self.render();
 
             } else if (self.composition.state === 'end'){
 
@@ -40,7 +40,7 @@ function inputInputHandler(self){
                 self.cursor.endPath.push(input.selectionEnd);
                 // self.cursor.end = input.selectionEnd;
 
-                self.el.innerHTML = self.serialize();
+                self.el.innerHTML = self.render();
                 self.restoreCursor();
 
                 self.composition = undefined;
@@ -126,7 +126,7 @@ function inputInputHandler(self){
         }
 
 
-        self.el.innerHTML = self.serialize();
+        self.el.innerHTML = self.render();
 
         self.restoreCursor();
     };
