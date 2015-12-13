@@ -82,4 +82,59 @@ describe('Split Block', function(){
         expect(splitBlock(blocks, 0, 15)).to.deep.equal(expectedBlocks);
 
     });
+
+    it('should correctly split the ranges at the end of the block', function(){
+
+        var blocks = [
+            {
+                blockType: 'P',
+                rawText: 'My name is bob. My name is Bob Smith',
+                ranges: {
+                    fontWeight: [
+                        { name: 'fontWeight', value: '700', start: 11, end: 14 },
+                        { name: 'fontWeight', value: '700', start: 27, end: 36 }
+                    ],
+                    color: [
+                        { name: 'color', value: 'green', start: 11, end: 30 }
+                    ],
+                    fontStyle: [
+                        { name: 'fontStyle', value: 'italic', start: 8, end: 15 }
+                    ]
+                }
+            }
+        ];
+
+        var expectedBlocks = [
+            {
+                blockType: 'P',
+                rawText: 'My name is bob. My name is Bob Smith',
+                ranges: {
+                    fontWeight: [
+                        { name: 'fontWeight', value: '700', start: 11, end: 14 },
+                        { name: 'fontWeight', value: '700', start: 27, end: 36 }
+                    ],
+                    color: [
+                        { name: 'color', value: 'green', start: 11, end: 30 }
+                    ],
+                    fontStyle: [
+                        { name: 'fontStyle', value: 'italic', start: 8, end: 15 }
+                    ]
+                }
+            },
+            {
+                blockType: 'P',
+                rawText: '',
+                ranges: {
+                    fontWeight: [
+                        /* ??? { name: 'fontWeight', value: '700', start: 0, end: 1 }*/
+                    ],
+                    color: [],
+                    fontStyle: []
+                }
+            }
+        ];
+
+        expect(splitBlock(blocks, 0, 36)).to.deep.equal(expectedBlocks);
+
+    });
 });

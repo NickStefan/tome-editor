@@ -51,7 +51,12 @@ function renderBlock (block){
             text = openTags(text, i, toBeOpened, toBeClosed);
         }
 
-        text += char;
+        if (char === '\n'){
+            // render soft breaks
+            text += '<br>';
+        } else {
+            text += char;
+        }
 
         if (toBeClosed.peek() && i === toBeClosed.peek().end - 1){
             text = closeTags(text, i, toBeOpened, toBeClosed);

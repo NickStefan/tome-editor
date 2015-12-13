@@ -100,6 +100,9 @@ Main.prototype.render = function(){
 };
 
 // maybe make private ???
+// move to the input handler file
+// will need to share some functionality
+// check for spanning multiple blocks etc
 Main.prototype.focusInput = function(){
     var cursor = this.getCursor();
     if (!cursor) {

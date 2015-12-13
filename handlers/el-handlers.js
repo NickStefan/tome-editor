@@ -1,3 +1,9 @@
+import {clean} from '../model/clean';
+import {insertText} from '../model/insert-text';
+import {removeText} from '../model/remove-text';
+
+import {mergeBlocks} from '../model/merge-blocks';
+import {splitBlock} from '../model/split-block';
 
 function elKeydownHandler(self){
     return function(e){
@@ -9,21 +15,23 @@ function elKeydownHandler(self){
                 case 73: // i
                     e.preventDefault();
                     e.stopPropagation();
+
                     self.applyRange({name: 'fontStyle', value: 'italic'});
                     return false;
-                    break;
+
                 case 66: // b
                     e.preventDefault();
                     e.stopPropagation();
+
                     self.applyRange({name: 'fontWeight', value: 700});
                     return false;
-                    break;
+
                 case 85: // u
                     e.preventDefault();
                     e.stopPropagation();
+
                     self.applyRange({name: 'textDecoration', value: 'underline'});
                     return false;
-                    break;
             }
         }
 
@@ -36,11 +44,18 @@ function elKeydownHandler(self){
             case 40: // down
                 break;
 
-            case 13: // enter === will split block later
-                // TODO: splitBlock(blocks, blockIndex, charIndex)
-                // need to reset cursor n correct block
-                // maybe need something like self.splitBlock ^^^ aka wrap the splitBlock method with cursor management
-                break;
+            case 13: // enter
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (e.shiftKey){
+                    interceptCrossBlockChanges.call(self);
+                    handleShiftEnter.call(self);
+                } else {
+                    interceptCrossBlockChanges.call(self);
+                    handleEnter.call(self);
+                }
+                return false;
 
             case 27: // escape
             case 16: // shift
@@ -54,14 +69,142 @@ function elKeydownHandler(self){
             // case ??: // fn ?
             // fn keys?
 
-            // FOCUS THE INPUT BOX
             case 46: // backspace
-            case 8:  // delete --- need to handle when its the first character of a block???
+                e.preventDefault();
+                e.stopPropagation();
+
+                handleDelete.call(self, 46);
+                return false;
+
+            case 8:  // delete
+                e.preventDefault();
+                e.stopPropagation();
+
+                handleDelete.call(self, 8);
+                return false;
+
+            // FOCUS THE INPUT BOX
             default:
+                interceptCrossBlockChanges.call(self);
                 self.focusInput();
         }
         return true;
     };
+}
+
+function interceptCrossBlockChanges(){
+    var cursor = this.getCursor();
+    if (!cursor) {
+        return;
+    } else {
+        this.cursor = cursor;
+    }
+
+    var charStart = cursor.startPath.slice().pop();
+    var charEnd = cursor.endPath.slice().pop();
+    var blockStart = cursor.startPath.slice(0, -1).pop();
+    var blockEnd = cursor.endPath.slice(0, -1).pop();
+
+    if (blockStart !== blockEnd){
+
+        // delete partially text on first outside block
+        var deleteStart = this.data.blocks[blockStart].rawText.length;
+        var startLength =  deleteStart - charStart;
+
+        this.data.blocks[blockStart] = clean(removeText(this.data.blocks[blockStart], deleteStart, startLength));
+
+        // delete partially text on last outside block
+        this.data.blocks[blockEnd] = clean(removeText(this.data.blocks[blockEnd], charEnd, charEnd));
+
+        // remove entirely any blocks in the middle
+        this.data.blocks.splice(blockStart + 1, (blockEnd - blockStart - 1) );
+
+        // merge startBlock and endBlock
+        this.data.blocks = mergeBlocks(this.data.blocks, blockStart, blockStart + 1);
+
+        this.cursor.endPath.pop();
+        this.cursor.endPath.pop();
+        this.cursor.endPath.push(blockStart);
+        this.cursor.endPath.push(charStart);
+
+        this.el.innerHTML = this.render();
+        this.restoreCursor();
+        return true;
+    }
+    return false;
+}
+
+function handleDelete(keyCode){
+    var handled = interceptCrossBlockChanges.call(this);
+    if (handled){
+        return;
+    }
+
+    if (keyCode === 8 /* first char of paragraph */ ){
+        // mergeBlocks you - 1, you
+        handled = true;
+
+    } else if (keyCode === 46 /* last char of paragraph */){
+        // mergeBlocks you, you + 1
+        handled = true;
+    }
+
+    // handle other simple deletions???
+
+    if (handled){
+        this.el.innerHTML = this.render();
+        this.restoreCursor();
+    }
+}
+
+function handleEnter(){
+    var cursor = this.getCursor();
+    if (!cursor) {
+        return;
+    } else {
+        this.cursor = cursor;
+    }
+
+    var charStart = cursor.startPath.slice().pop();
+    var blockStart = cursor.startPath.slice(0, -1).pop();
+
+    // splitBlock
+    this.data.blocks = splitBlock(this.data.blocks, blockStart, charStart);
+
+    this.cursor.startPath.pop();
+    this.cursor.startPath.pop();
+    this.cursor.startPath.push(blockStart + 1);
+    this.cursor.startPath.push(0);
+
+    this.cursor.endPath.pop();
+    this.cursor.endPath.pop();
+    this.cursor.endPath.push(blockStart + 1);
+    this.cursor.endPath.push(0);
+
+    this.el.innerHTML = this.render();
+    this.restoreCursor();
+}
+
+function handleShiftEnter(){
+    var cursor = this.getCursor();
+    if (!cursor) {
+        return;
+    } else {
+        this.cursor = cursor;
+    }
+
+    var charStart = cursor.startPath.slice().pop();
+    var blockStart = cursor.startPath.slice(0, -1).pop();
+
+    this.data.blocks[blockStart] = clean(insertText(this.data.blocks[blockStart], charStart, '\n'));
+
+    this.cursor.startPath.pop();
+    this.cursor.endPath.pop();
+    this.cursor.startPath.push(charStart + 1);
+    this.cursor.endPath.push(charStart + 1);
+
+    this.el.innerHTML = this.render();
+    this.restoreCursor();
 }
 
 export {
