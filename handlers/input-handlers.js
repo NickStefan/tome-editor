@@ -10,8 +10,6 @@ function inputInputHandler(self){
         var cursorStart = self.cursor.startPath.slice().pop();
         var cursorEnd = self.cursor.endPath.slice().pop();
 
-        var collapsed = cursorStart === cursorEnd;
-
         if (self.composition !== undefined){
             var chars = input.value.slice(self.composition.index, input.selectionEnd);
 
@@ -48,86 +46,59 @@ function inputInputHandler(self){
             return;
         }
 
-        // TODO HANDLE mergBlocks when deleting from 0 char of block??
+        // deletion
+        if (cursorStart === cursorEnd && input.selectionEnd < cursorEnd){
+            /* move to handle delete */
+            // var length = cursorEnd - input.selectionEnd;
 
-        // collapsed
-        if (input.selectionStart === input.selectionEnd){
+            // self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], cursorEnd, length));
 
-            // deletion
-            if (collapsed && input.selectionEnd < cursorEnd){
-                var length = cursorEnd - input.selectionEnd;
+            // self.cursor.startPath.pop();
+            // self.cursor.startPath.push(input.selectionStart);
 
-                self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], cursorEnd, length));
+            // self.cursor.endPath.pop();
+            // self.cursor.endPath.push(input.selectionEnd);
 
-                self.cursor.startPath.pop();
-                self.cursor.startPath.push(input.selectionStart);
+        // overwrite
+        } else if (cursorStart !== cursorEnd){
+            // var overwrite = cursorEnd - cursorStart;
+            // var chars = input.value.slice(cursorStart, input.selectionStart);
+            // self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], cursorEnd, overwrite));
+            // self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], cursorStart, chars));
 
-                self.cursor.endPath.pop();
-                self.cursor.endPath.push(input.selectionEnd);
+            // self.cursor.startPath.pop();
+            // self.cursor.startPath.push(input.selectionStart);
 
-                // self.cursor.start = input.selectionStart;
-                // self.cursor.end = input.selectionEnd;
+            // self.cursor.endPath.pop();
+            // self.cursor.endPath.push(input.selectionStart);
 
-            // overwrite
-            } else if (!collapsed){
-                var overwrite = cursorEnd - cursorStart;
-                var chars = input.value.slice(cursorStart, input.selectionStart);
-                self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], cursorEnd, overwrite));
-                self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], cursorStart, chars));
+        // insertion
+        } else if (cursorStart === cursorEnd && input.selectionStart > cursorStart){
+            var chars = input.value.slice(cursorStart, input.selectionStart);
 
-                self.cursor.startPath.pop();
-                self.cursor.startPath.push(input.selectionStart);
+            self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], cursorStart, chars));
 
-                self.cursor.endPath.pop();
-                self.cursor.endPath.push(input.selectionStart);
+            self.cursor.startPath.pop();
+            self.cursor.startPath.push(input.selectionStart);
 
-                // self.cursor.start = input.selectionStart;
-                // self.cursor.end = cursorStart;
+            self.cursor.endPath.pop();
+            self.cursor.endPath.push(input.selectionStart);
 
-            // insertion
-            } else if (collapsed && input.selectionStart > cursorStart){
-                var chars = input.value.slice(cursorStart, input.selectionStart);
+        // backspace
+        } else if (cursorStart === cursorEnd && input.selectionStart === cursorStart && input.value.length !== self.data.blocks[blockStart].rawText.length){
 
-                self.data.blocks[blockStart] = clean(insertText(self.data.blocks[blockStart], cursorStart, chars));
+            /* move to handle backspace */
+            // self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], cursorEnd + 1, 1));
 
-                self.cursor.startPath.pop();
-                self.cursor.startPath.push(input.selectionStart);
+            // self.cursor.startPath.pop();
+            // self.cursor.startPath.push(input.selectionStart);
 
-                self.cursor.endPath.pop();
-                self.cursor.endPath.push(input.selectionStart);
-
-                // self.cursor.start = input.selectionStart;
-                // self.cursor.end = cursorStart;
-
-            // backspace
-            } else if (collapsed && input.selectionStart === cursorStart && input.value.length !== self.data.blocks[blockStart].rawText.length){
-
-                self.data.blocks[blockStart] = clean(removeText(self.data.blocks[blockStart], cursorEnd + 1, 1));
-
-                self.cursor.startPath.pop();
-                self.cursor.startPath.push(input.selectionStart);
-
-                self.cursor.endPath.pop();
-                self.cursor.endPath.push(input.selectionEnd);
-
-                // self.cursor.start = input.selectionStart;
-                // self.cursor.end = input.selectionEnd;
-            }
-
-
-        // DOES THIS EVER GET TRIGGERED???
-        // range
-        } else {
-            var chars = input.value.slice(input.selectionStart, input.selectionEnd);
-            console.log('range', chars);
-
-            self.cursor.start = input.selectionStart;
-            self.cursor.end = input.selectionEnd;
+            // self.cursor.endPath.pop();
+            // self.cursor.endPath.push(input.selectionEnd);
         }
 
 
         self.render();
-
         self.restoreCursor();
     };
 }

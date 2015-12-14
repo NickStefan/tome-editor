@@ -99,6 +99,7 @@ function interceptCrossBlockChanges(){
     } else {
         this.cursor = cursor;
     }
+    console.log(this.cursor);
 
     var charStart = cursor.startPath.slice().pop();
     var charEnd = cursor.endPath.slice().pop();
@@ -125,6 +126,17 @@ function interceptCrossBlockChanges(){
         this.cursor.endPath.pop();
         this.cursor.endPath.pop();
         this.cursor.endPath.push(blockStart);
+        this.cursor.endPath.push(charStart);
+
+        this.render();
+        this.restoreCursor();
+        return true;
+
+    } else if (charStart !== charEnd){
+
+        this.data.blocks[blockStart] = clean(removeText(this.data.blocks[blockStart], charEnd, charEnd - charStart));
+
+        this.cursor.endPath.pop();
         this.cursor.endPath.push(charStart);
 
         this.render();
@@ -183,6 +195,25 @@ function handleDelete(keyCode){
         this.cursor.endPath.pop();
         this.cursor.endPath.push(blockStart);
         this.cursor.endPath.push(blockLength);
+
+    /* regular delete */
+    } else if (keyCode === 8){
+
+        this.data.blocks[blockStart] = clean(removeText(this.data.blocks[blockStart], charEnd, 1));
+
+        this.cursor.startPath.pop();
+        this.cursor.startPath.push(charStart - 1);
+
+        this.cursor.endPath.pop();
+        this.cursor.endPath.push(charStart - 1);
+
+    /* regular backspace */
+    } else if (keyCode === 46){
+
+        this.data.blocks[blockStart] = clean(removeText(this.data.blocks[blockStart], charEnd + 1, 1));
+
+        this.cursor.endPath.pop();
+        this.cursor.endPath.push(charStart);
     }
 
     this.render();
