@@ -1,8 +1,12 @@
 
 var el = document.querySelector('[data-tome]');
+var debugEl = document.querySelector('[data-tome-debug]');
+var uiEl = document.querySelector('[data-tome-test-ui]');
 
 var Tome = new Tome({
     el: el,
+    debugEl: debugEl,
+    testUiEl: uiEl,
     data: {
         blocks: [
             {

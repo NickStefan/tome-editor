@@ -75,7 +75,7 @@ function updateRanges(ranges, index, length){
                 }
 
                 // but what if the index change goes leftward past start of c?
-                if (current.start > (index + length)){
+                if (current.start >= (index + length)){
                     // delete range, dont push to update
                     continue;
                 }

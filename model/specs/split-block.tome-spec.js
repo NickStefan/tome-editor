@@ -133,7 +133,7 @@ describe('Split Block', function(){
                 }
             }
         ];
-
+        console.log(blocks[0].rawText.length);
         expect(splitBlock(blocks, 0, 36)).to.deep.equal(expectedBlocks);
 
     });

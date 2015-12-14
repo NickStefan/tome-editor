@@ -127,7 +127,7 @@ function interceptCrossBlockChanges(){
         this.cursor.endPath.push(blockStart);
         this.cursor.endPath.push(charStart);
 
-        this.el.innerHTML = this.render();
+        this.render();
         this.restoreCursor();
         return true;
     }
@@ -140,21 +140,53 @@ function handleDelete(keyCode){
         return;
     }
 
-    if (keyCode === 8 /* first char of paragraph */ ){
-        // mergeBlocks you - 1, you
-        handled = true;
-
-    } else if (keyCode === 46 /* last char of paragraph */){
-        // mergeBlocks you, you + 1
-        handled = true;
+    var cursor = this.getCursor();
+    if (!cursor) {
+        return;
+    } else {
+        this.cursor = cursor;
     }
 
-    // handle other simple deletions???
+    var charStart = cursor.startPath.slice().pop();
+    var charEnd = cursor.endPath.slice().pop();
+    var blockStart = cursor.startPath.slice(0, -1).pop();
+    // var blockEnd = cursor.endPath.slice(0, -1).pop();
+    var blockLength = this.data.blocks[blockStart].rawText.length;
 
-    if (handled){
-        this.el.innerHTML = this.render();
-        this.restoreCursor();
+    /* first char of paragraph */
+    if (keyCode === 8 && charStart === 0){
+
+        blockLength = this.data.blocks[blockStart - 1].rawText.length;
+
+        this.data.blocks = mergeBlocks(this.data.blocks, blockStart - 1, blockStart);
+
+        this.cursor.startPath.pop();
+        this.cursor.startPath.pop();
+        this.cursor.startPath.push(blockStart - 1);
+        this.cursor.startPath.push(blockLength);
+
+        this.cursor.endPath.pop();
+        this.cursor.endPath.pop();
+        this.cursor.endPath.push(blockStart - 1);
+        this.cursor.endPath.push(blockLength);
+
+    /* last char of paragraph */
+    } else if (keyCode === 46 && charEnd === blockLength){
+        this.data.blocks = mergeBlocks(this.data.blocks, blockStart, blockStart + 1);
+
+        this.cursor.startPath.pop();
+        this.cursor.startPath.pop();
+        this.cursor.startPath.push(blockStart);
+        this.cursor.startPath.push(blockLength);
+
+        this.cursor.endPath.pop();
+        this.cursor.endPath.pop();
+        this.cursor.endPath.push(blockStart);
+        this.cursor.endPath.push(blockLength);
     }
+
+    this.render();
+    this.restoreCursor();
 }
 
 function handleEnter(){
@@ -181,7 +213,7 @@ function handleEnter(){
     this.cursor.endPath.push(blockStart + 1);
     this.cursor.endPath.push(0);
 
-    this.el.innerHTML = this.render();
+    this.render();
     this.restoreCursor();
 }
 
@@ -203,7 +235,7 @@ function handleShiftEnter(){
     this.cursor.startPath.push(charStart + 1);
     this.cursor.endPath.push(charStart + 1);
 
-    this.el.innerHTML = this.render();
+    this.render();
     this.restoreCursor();
 }
 
