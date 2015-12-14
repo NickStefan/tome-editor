@@ -83,7 +83,7 @@ function elKeydownHandler(self){
                 handleDelete.call(self, 8);
                 return false;
 
-            // FOCUS THE INPUT BOX
+            // FOCUS THE HIDDEN INPUT BOX
             default:
                 interceptCrossBlockChanges.call(self);
                 self.focusInput();
@@ -99,7 +99,6 @@ function interceptCrossBlockChanges(){
     } else {
         this.cursor = cursor;
     }
-    console.log(this.cursor);
 
     var charStart = cursor.startPath.slice().pop();
     var charEnd = cursor.endPath.slice().pop();
