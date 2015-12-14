@@ -86,10 +86,27 @@ function elKeydownHandler(self){
             // FOCUS THE HIDDEN INPUT BOX
             default:
                 interceptCrossBlockChanges.call(self);
-                self.focusInput();
+                focusInput.call(self);
         }
         return true;
     };
+}
+
+function focusInput(){
+    var cursor = this.getCursor();
+    if (!cursor) {
+        return;
+    } else {
+        this.cursor = cursor;
+    }
+
+    var start = cursor.startPath.slice().pop();
+    var end = cursor.endPath.slice().pop();
+    var block = cursor.startPath.slice(0, -1).pop();
+
+    this.hiddenInput.focus();
+    this.hiddenInput.value = this.data.blocks[block].rawText;
+    this.hiddenInput.setSelectionRange(start, end);
 }
 
 function interceptCrossBlockChanges(){
@@ -157,6 +174,10 @@ function handleDelete(keyCode){
     } else {
         this.cursor = cursor;
     }
+
+    // TODO
+    // backspace across an entire paragraph to where its empty
+    // the styling will now be messed up, possibly same as middle of paragraph
 
     var charStart = cursor.startPath.slice().pop();
     var charEnd = cursor.endPath.slice().pop();

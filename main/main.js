@@ -23,7 +23,7 @@ function Main(config){
 
     if (this.el){
 
-        this.hiddenInput = document.createElement('input');
+        this.hiddenInput = document.createElement('textarea');
         this.hiddenInput.style.width = this.el.offsetWidth;
         document.body.appendChild(this.hiddenInput);
 
@@ -105,35 +105,6 @@ Main.prototype.render = function(){
     if (this.debugEl){
         this.debugEl.innerHTML = `<pre>${JSON.stringify(this.data, null, 4)}</pre>`;
     }
-};
-
-// maybe make private ???
-// move to the input handler file
-// will need to share some functionality
-// check for spanning multiple blocks etc
-Main.prototype.focusInput = function(){
-    var cursor = this.getCursor();
-    if (!cursor) {
-        return;
-    } else {
-        this.cursor = cursor;
-    }
-
-    var start = cursor.startPath.slice().pop();
-    var end = cursor.endPath.slice().pop();
-    var block = cursor.startPath.slice(0, -1).pop();
-
-    this.hiddenInput.focus();
-    this.hiddenInput.value = this.data.blocks[block].rawText;
-    this.hiddenInput.setSelectionRange(start, end);
-
-    // var blockStart = cursor.blockStart;
-    // var start = cursor.start;
-    // var end = cursor.end;
-
-    // this.hiddenInput.focus();
-    // this.hiddenInput.value = this.data.blocks[blockStart].rawText;
-    // this.hiddenInput.setSelectionRange(start, end);
 };
 
 Main.prototype.getCursor = function(){

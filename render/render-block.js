@@ -51,9 +51,11 @@ function renderBlock (block){
             text = openTags(text, i, toBeOpened, toBeClosed);
         }
 
+        // render soft breaks
         if (char === '\n'){
-            // render soft breaks
-            text += '<br>';
+            // use a zero width character to stand in for \n,
+            // so that our range code isnt off by one when subing out \n for <br>
+            text += '<br>&#8203;';
         } else {
             text += char;
         }
