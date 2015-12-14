@@ -176,8 +176,10 @@ function handleDelete(keyCode){
     }
 
     // TODO
-    // backspace across an entire paragraph to where its empty
-    // the styling will now be messed up, possibly same as middle of paragraph
+    // problem with the rendering engine, when start === end
+    // color 0s0e is sometimes making spans that wrap 3 or 4 chars
+    // debug in renderBlock
+    // more bugs when say color is 9 9 making whole 5 chars after green
 
     var charStart = cursor.startPath.slice().pop();
     var charEnd = cursor.endPath.slice().pop();

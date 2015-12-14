@@ -39,10 +39,16 @@ function updateRanges(ranges, index, length){
 
         // removing text
         } else {
+
+            if (index === current.start && index === current.end){
+                // do nothing, delete this range
+                continue;
+            }
+
             // if index is left of start, change start and end by length
             // i
             //     c --------------
-            if (index <= current.start){
+            else if (index <= current.start){
                 current.start += length;
                 current.end += length;
             }
