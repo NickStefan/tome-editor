@@ -1,4 +1,4 @@
-# Tome
+# Tome Editor
 
 A rich text editor written in javascript. Content editable is treated as mere IO to the actual json data model.
 
@@ -83,7 +83,7 @@ var Tome = new Tome({
 });
 ```
 
-`el` is the contentEditable dom node you want Tome to control
+`el` is the contentEditable dom node you want Tome to control. Tome will automatically render your data model if passed an `el` argument.
 `debugEl` is a dom node that Tome may inject a prettified JSON representing the internal data model (extremely helpful).
 `testUiEl` when given a dom node, Tome will inject the testUi into this node when __createTestUI()__ api is used
 

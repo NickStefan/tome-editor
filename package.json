@@ -1,11 +1,12 @@
 {
-  "name": "tome",
+  "name": "tome-editor",
   "version": "0.0.2",
   "description": "a not contentEditable text editor",
   "keywords":[
     "rich text editor",
     "content editable",
-    "document editor"
+    "document editor",
+    "tome"
   ],
   "main": "./build/tome",
   "scripts": {
