@@ -1,0 +1,1 @@
+exports.Tome = require('./build/tome');

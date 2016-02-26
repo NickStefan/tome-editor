@@ -1,10 +1,16 @@
 {
   "name": "tome",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a not contentEditable text editor",
-  "main": "tome.js",
+  "keywords":[
+    "rich text editor",
+    "content editable",
+    "document editor"
+  ],
+  "main": "./build/tome",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node wocha -f wocha.webpack.js",
+    "postinstall": "webpack"
   },
   "author": "Nick Stefan",
   "license": "MIT",

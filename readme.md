@@ -1,4 +1,4 @@
-# TOME
+# Tome
 
 A rich text editor written in javascript. Content editable is treated as mere IO to the actual json data model.
 
@@ -12,6 +12,8 @@ contentEditable uses a tree data model. Tree's are great, except that our user's
 We need to have a source of truth that more closely matches how a user thinks of their rich text. They don't think of their rich text as being a tree of JSON or XML/HTML. All the user cares about is 'from here to here should be this or that style'. 
 
 This is why we should use a 'range based' data model, and then serialize it into a tree only for rendering purposes.
+
+Separating the rendering, data, and application logic means we can have a tested and well behaved application model. In contentEditable, the rendering, data, and application logic are so interwined that its impossible to isolate bugs to just one of those concerns.
 
 Example model:
 ~~~js
@@ -55,7 +57,7 @@ $ python -m SimpleHTTPServer
 // go to localhost:8000
 ```
 
-This text editor is intended for use with custom UI. The example app merely creates buttons wrapping the ___applyRange()__ API.
+This text editor is intended for use with custom UI. The example app merely creates buttons wrapping the __applyRange()__ API.
 
 ## API:
 

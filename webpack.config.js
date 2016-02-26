@@ -26,11 +26,11 @@ var eslint = {
 
 module.exports = [
     {
-        name: 'web-build',
+        name: 'common-build',
         eslint: eslint,
         entry: __dirname + '/main/main.js',
-        target: 'web',
         output: {
+            libraryTarget: 'umd',
             path: './build/',
             filename: 'tome.js'
         },
@@ -44,11 +44,11 @@ module.exports = [
         }
     },
     {
-        name: 'web-build',
+        name: 'common-build',
         eslint: eslint,
         entry: __dirname + '/main/main.js',
-        target: 'web',
         output: {
+            libraryTarget: 'umd',
             path: './example/',
             filename: 'tome.js'
         },
