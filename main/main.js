@@ -84,12 +84,19 @@ Main.prototype.applyRange = function(range){
 
     var cursor = this.cursor;
     var blockStart = cursor.startPath.slice(0, -1).pop();
-
+    var blockEnd = cursor.endPath.slice(0, -1).pop();
     range.start = range.start || cursor.startPath.slice().pop();
     range.end = range.end || cursor.endPath.slice().pop();
 
-    this.data.blocks[blockStart].ranges[ range.name ] = applyRange(this.data.blocks[blockStart].ranges[ range.name ], range);
-    this.data.blocks[blockStart] = clean(this.data.blocks[blockStart]);
+    for (var i=blockStart; i!==(blockEnd+1);i++){
+        this.data.blocks[i].ranges[ range.name ] = applyRange(this.data.blocks[i].ranges[ range.name ], {
+            start: i === blockStart ? range.start : 0,
+            end: i === blockEnd ? range.end : this.data.blocks[i].rawText.length,
+            name: range.name,
+            value: range.value
+        });
+        this.data.blocks[i] = clean(this.data.blocks[i]);
+    }
 
     this.render();
     this.restoreCursor();

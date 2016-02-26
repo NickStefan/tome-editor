@@ -55,7 +55,53 @@ $ python -m SimpleHTTPServer
 // go to localhost:8000
 ```
 
+This text editor is intended for use with custom UI. The example app merely creates buttons wrapping the ___applyRange()__ API.
+
 ## API:
+
+__Tome()__ constructor:
+```
+var Tome = new Tome({
+    el: el,
+    debugEl: debugEl,
+    testUiEl: uiEl,
+    data: {
+        blocks: [
+            {
+                blockType: 'P',
+                rawText: 'bob writes some text.',
+                ranges: {
+                    fontWeight: [
+                        { name: 'fontWeight', value: '700', start: 11, end: 15}
+                    ]
+                }
+            }
+        ]
+    }
+});
+```
+
+`el` is the contentEditable dom node you want Tome to control
+`debugEl` is a dom node that Tome may inject a prettified JSON representing the internal data model (extremely helpful).
+`testUiEl` when given a dom node, Tome will inject the testUi into this node when __createTestUI()__ api is used
+
+__createTestUI()__
+Takes JSON to quickly generate UI for testing:
+```
+var UI = [
+    {
+        label: 'bold',
+        el: 'button',
+        event: 'click',
+        handler: function(self){
+            return function(e){
+                self.applyRange({name: 'fontWeight', value: 700 });
+            }
+        }
+    }
+]
+tomeInstance.createTestUi(UI);
+```
 
 __getCursor()__
 
@@ -74,6 +120,8 @@ takes same API as what *getCursor* returns.
 __render()__
 recreates the textarea from the source of truth internal data structure (no more content editable ruining your data). This turns the more flat JSON into a more tree structured HTML. This is probably the most critical part of the application.
 
+If no 'el' property was passed at Tome's initialization, this method will return a string of the rendered HTML, rather than update the controlled dom node.
+
 __applyRange()__
 `self.applyRange({name: 'fontStyle', value: 'italic'});` applies the style to the currently selected range
 
@@ -82,4 +130,3 @@ __insertText()__, __clean()__, __mergeBlocks()__, __removeText()__, __splitBlock
 
 __updateRanges()__ 
 Is the most critical internal method. Storing all of the styling as index based ranges, means that we have to correctly update these ranges on every insertion, deletion and block split.
-
