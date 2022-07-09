@@ -42,19 +42,20 @@ Rendered:
 <p>My name <span style="font-style: italic;">is </span><span style="color: green;"><span style="font-style: italic;"><span style="font-weight: 700;">bob</span>.</span> My name is </span><span style="font-weight: 700;"><span style="color: green;">Bob</span> Smith</span></p>';
 ~~~
 
+## Install
+`$ npm install`
+
 ## Tests
-There are currently 26 tests. Its mocha + webpack:
-`$ node wocha -f wocha.webpack.js -w`
+There are currently 26 tests. Its mocha + webpack.
+`$ npm test`
 
 ## Build
-`$ webpack`
+`$ npm run build`
 
 ## Example App
 ```
-$ webpack
-$ cd example
-$ python -m SimpleHTTPServer
-// go to localhost:8000
+$ npm run build
+$ npm run example // go to localhost:8000
 ```
 
 This text editor is intended for use with custom UI. The example app merely creates buttons wrapping the __applyRange()__ API.

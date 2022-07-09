@@ -49,7 +49,7 @@ testConfig.output = {
     filename: entryTransform(entry).filename,
     libraryTarget: 'commonjs2'
 }
-
+console.log(testConfig)
 var compiler = webpack(testConfig);
 
 /**
@@ -143,7 +143,7 @@ function jsdomSetup(){
 
 function entryTransform(entry){
     var filename = entry.split('/').slice(-1)[0];
-    var path = entry.split('/').slice(0,-1).join('/') + '/';
+    var path = entry.split('/').slice(0,-1).join('/');
     return {
         outputpath: 'temp-wocha/' + path,
         path: path,
